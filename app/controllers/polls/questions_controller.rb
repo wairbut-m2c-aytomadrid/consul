@@ -15,10 +15,12 @@ class Polls::QuestionsController < ApplicationController
     if params[:token].present?
       answer.save!
       answer.record_voter_participation(token)
-    end
 
-    @answers_by_question_id = { @question.id => params[:answer] }
-    log_event("poll", 'vote')
+      @answers_by_question_id = { @question.id => params[:answer] }
+      log_event("poll", 'vote')
+    else
+      render :error
+    end
   end
 
 end
