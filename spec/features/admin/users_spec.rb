@@ -31,5 +31,15 @@ feature 'Admin users' do
     expect(page).not_to have_content @admin.name
     expect(page).not_to have_content @admin.email
   end
+
+  scenario 'Search by email with space' do
+    fill_in :search, with: "#{@user.email} "
+    click_button 'Search'
+
+    expect(page).to have_content @user.name
+    expect(page).to have_content @user.email
+    expect(page).not_to have_content @admin.name
+    expect(page).not_to have_content @admin.email
+  end
 end
 
