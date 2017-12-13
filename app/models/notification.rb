@@ -1,4 +1,6 @@
 class Notification < ActiveRecord::Base
+  include Notifiable
+
   belongs_to :user, counter_cache: true
   belongs_to :notifiable, polymorphic: true
 
@@ -23,32 +25,6 @@ class Notification < ActiveRecord::Base
     else
       Notification.create!(user_id: user_id, notifiable: notifiable)
     end
-  end
-
-  def notifiable_title
-    case notifiable.class.name
-    when "ProposalNotification"
-      notifiable.proposal.title
-    when "Comment"
-      notifiable.commentable.title
-    else
-      notifiable.title
-    end
-  end
-
-  def notifiable_action
-    case notifiable_type
-    when "ProposalNotification"
-      "proposal_notification"
-    when "Comment"
-      "replies_to"
-    else
-      "comments_on"
-    end
-  end
-
-  def linkable_resource
-    notifiable.is_a?(ProposalNotification) ? notifiable.proposal : notifiable
   end
 
 end

@@ -3,7 +3,7 @@ class Comment < ActiveRecord::Base
   include HasPublicAuthor
   include Graphqlable
 
-  COMMENTABLE_TYPES = %w(Debate Proposal Budget::Investment Poll::Question Legislation::Question Legislation::Proposal Legislation::Annotation Topic SpendingProposal ProbeOption Poll).freeze
+  COMMENTABLE_TYPES = %w(Debate Proposal Budget::Investment Poll Topic Legislation::Question Legislation::Annotation Legislation::Proposal SpendingProposal ProbeOption).freeze
 
   acts_as_paranoid column: :hidden_at
   include ActsAsParanoidAliases
