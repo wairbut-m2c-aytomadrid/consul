@@ -143,4 +143,12 @@ class Poll < ActiveRecord::Base
     slug.nil?
   end
 
+  def show_results
+    self.expired? && self.results_enabled?
+  end
+
+  def show_stats
+    self.expired? && self.stats_enabled?
+  end
+
 end
