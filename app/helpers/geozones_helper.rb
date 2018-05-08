@@ -39,4 +39,12 @@ module GeozonesHelper
     end
   end
 
+  def show_map(geozonable)
+    feature?("geozones.#{geozonable.pluralize}.maps")
+  end
+
+  def show_links(geozonable)
+    feature?("geozones.#{geozonable.pluralize}.links")
+  end
+
 end
