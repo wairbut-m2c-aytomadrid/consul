@@ -85,15 +85,25 @@ class Admin::StatsController < Admin::BaseController
   def budget_balloting
     @budget = Budget.find(params[:budget_id])
 
-    budget_stats = Stat.hash("budget_#{@budget.id}_balloting_stats")
-    @user_count = budget_stats['stats']['user_count']
-    @vote_count = budget_stats['stats']['vote_count']
-    @user_count_in_city = budget_stats['stats']['user_count_in_city']
-    @user_count_in_district = budget_stats['stats']['user_count_in_district']
-    @user_count_in_city_and_district = budget_stats['stats']['user_count_in_city_and_district']
+    city_heading = @budget.headings.where(name: "Toda la ciudad").first
+    city_heading_id = city_heading.present? ? city_heading.id : nil
 
-    @vote_count_by_heading = budget_stats['vote_count_by_heading']
-    @user_count_by_district = budget_stats['user_count_by_district']
+    @user_count = Budget::Ballot::Line.where(ballot_id: Budget::Ballot.where(budget_id: params[:budget_id])).group(:ballot_id).count.values.sum
+    @vote_count = Budget::Ballot::Line.where(ballot_id: Budget::Ballot.where(budget_id: params[:budget_id])).count
+
+    @user_count_in_city = Budget::Ballot.joins("LEFT JOIN budget_ballot_lines ON budget_ballot_lines.ballot_id = budget_ballots.id").where("budget_ballot_lines.heading_id = #{city_heading_id}").where(id: Budget::Ballot.where(budget_id: params[:budget_id])).count
+    @user_count_in_district = Budget::Ballot.joins("LEFT JOIN budget_ballot_lines ON budget_ballot_lines.ballot_id = budget_ballots.id").where("budget_ballot_lines.heading_id IN (#{(@budget.heading_ids - [city_heading_id]).join(',')})").where(id: Budget::Ballot.where(budget_id: params[:budget_id])).count
+
+    @user_count_in_city_and_district = ActiveRecord::Base.connection.execute("(SELECT count(*) FROM \"budget_ballots\" LEFT JOIN budget_ballot_lines ON budget_ballot_lines.ballot_id = budget_ballots.id WHERE (budget_ballot_lines.heading_id IN (#{(@budget.heading_ids - [city_heading_id]).join(',')})) AND \"budget_ballots\".\"id\" IN (SELECT \"budget_ballots\".\"id\" FROM \"budget_ballots\" WHERE \"budget_ballots\".\"budget_id\" = #{params[:budget_id]})) INTERSECT (SELECT count(*) FROM \"budget_ballots\" LEFT JOIN budget_ballot_lines ON budget_ballot_lines.ballot_id = budget_ballots.id WHERE (budget_ballot_lines.heading_id = #{city_heading_id}) AND \"budget_ballots\".\"id\" IN (SELECT \"budget_ballots\".\"id\" FROM \"budget_ballots\" WHERE \"budget_ballots\".\"budget_id\" = #{params[:budget_id]}))").values.flatten.first.to_i
+
+    @vote_count_by_heading = {}
+    @user_count_by_district = {}
+
+    @budget.headings.each do |heading|
+      @vote_count_by_heading[heading.name] = @budget.lines.where(heading_id: heading.id).count
+      @user_count_by_district[heading.name] = User.where.not(balloted_heading_id: nil).where(balloted_heading_id: heading.id).count if heading.id != city_heading_id
+    end
+
   end
 
   def redeemable_codes
