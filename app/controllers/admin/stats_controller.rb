@@ -86,7 +86,7 @@ class Admin::StatsController < Admin::BaseController
     @budget = Budget.find(params[:budget_id])
 
     city_heading = @budget.headings.where(name: "Toda la ciudad").first
-    city_heading_id = city_heading.present? ? city_heading.id : nil
+    city_heading_id = city_heading.present? ? city_heading.id : 'null'
 
     @user_count = Budget::Ballot::Line.where(ballot_id: Budget::Ballot.where(budget_id: params[:budget_id]
                                             )).group(:ballot_id).count.values.sum
