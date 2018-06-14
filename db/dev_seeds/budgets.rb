@@ -128,7 +128,8 @@ section "Balloting Investments" do
   users = User.all
   # 600000 for stats testing
   100.times do
-    ballot = Budget::Ballot.create(user: users.sample, budget: budget)
+    ballot = Budget::Ballot.create(user: users.sample,
+                                   budget: budget)
     ballot.add_investment(investments.sample)
   end
 end
