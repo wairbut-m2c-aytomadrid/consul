@@ -87,6 +87,13 @@ feature 'Budgets' do
 
       expect(page).to have_content "There are no budgets"
     end
+
+    scenario "See results button appears for forced budgets" do
+      create(:budget, force_public: true)
+
+      visit budgets_path
+      expect(page).to have_content "See results"
+    end
   end
 
   scenario 'Index shows only published phases' do
@@ -407,6 +414,22 @@ feature 'Budgets' do
       within("#finished_budgets") do
         expect(page).to have_link('See results', href: "/presupuestos/#{budget.slug}/resultados")
       end
+    end
+
+    scenario "See results button appears for forced budget" do
+      user = create(:user)
+      admin = create(:administrator)
+      budget = create(:budget, force_public: true)
+
+      login_as(user)
+      visit budget_path(budget)
+      expect(page).to have_link "See results"
+
+      logout
+
+      login_as(admin.user)
+      visit budget_path(budget)
+      expect(page).to have_link "See results"
     end
 
   end
