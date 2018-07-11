@@ -57,7 +57,7 @@ module BudgetsHelper
   end
 
   def budget_published?(budget)
-    !budget.drafting? || current_user&.administrator?
+    budget.force_public || !budget.drafting? || current_user&.administrator?
   end
 
   def display_support_alert?(investment)
@@ -100,4 +100,9 @@ module BudgetsHelper
                               ends_at:   balloting_phase.ends_at }),
             method: :post
   end
+
+  def show_the_stats_link?(budget, bool)
+    bool || budget.force_public
+  end
+
 end

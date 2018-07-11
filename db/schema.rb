@@ -342,6 +342,7 @@ ActiveRecord::Schema.define(version: 20180727140800) do
     t.text     "description_drafting"
     t.text     "description_publishing_prices"
     t.text     "description_informing"
+    t.boolean  "force_public"
   end
 
   create_table "campaigns", force: :cascade do |t|

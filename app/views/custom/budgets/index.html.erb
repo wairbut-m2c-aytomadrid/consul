@@ -61,8 +61,7 @@
             <% end %>
           <% end %>
 
-
-        <% if current_budget.finished? %>
+        <% if show_the_stats_link?(current_budget, current_budget.finished?) %>
           <%= link_to t("budgets.show.see_results"),
                       custom_budget_results_path(current_budget),
                       class: "button margin-top expanded" %>

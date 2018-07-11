@@ -17,6 +17,7 @@
       <th><%= t("admin.budgets.index.table_edit_groups") %></th>
       <th><%= t("admin.budgets.index.table_edit_budget") %></th>
       <th><%= t("admin.budgets.index.table_admin_ballots") %></th>
+      <th><%= t("admin.budgets.index.table_force_public") %></th>
     </tr>
   </thead>
   <tbody>
@@ -45,6 +46,10 @@
           <% else %>
             <%= link_to_create_budget_poll(budget) %>
           <% end %>
+        </td>
+        </td>
+        <td class="small">
+          <%= budget.force_public ? t("shared.yes") : t("shared.no") %>
         </td>
       </tr>
     <% end %>
