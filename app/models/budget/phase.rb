@@ -6,6 +6,11 @@ class Budget
     SUMMARY_MAX_LENGTH = 1000
     DESCRIPTION_MAX_LENGTH = 2000
 
+    translates :summary,     touch: true
+    translates :description, touch: true
+
+    globalize_accessors locales: [:en, :es, :fr, :nl, :val, :pt_br]
+
     belongs_to :budget
     belongs_to :next_phase, class_name: 'Budget::Phase', foreign_key: :next_phase_id
     has_one :prev_phase, class_name: 'Budget::Phase', foreign_key: :next_phase_id

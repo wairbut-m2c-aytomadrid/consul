@@ -5,6 +5,10 @@ class Budget < ActiveRecord::Base
 
   CURRENCY_SYMBOLS = %w(€ $ £ ¥).freeze
 
+  translates :name, touch: true
+
+  globalize_accessors locales: [:en, :es, :fr, :nl, :val, :pt_br]
+
   validates :name, presence: true, uniqueness: true
   validates :phase, inclusion: { in: Budget::Phase::PHASE_KINDS }
   validates :currency_symbol, presence: true

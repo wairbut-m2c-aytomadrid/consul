@@ -2,6 +2,10 @@ class Budget
   class Heading < ActiveRecord::Base
     include Sluggable
 
+    translates :name, touch: true
+
+    globalize_accessors locales: [:en, :es, :fr, :nl, :val, :pt_br]
+
     belongs_to :group
 
     has_many :investments
