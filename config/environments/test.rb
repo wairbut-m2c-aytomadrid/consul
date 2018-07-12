@@ -51,6 +51,8 @@ Rails.application.configure do
 
   config.cache_store = :null_store
 
+  config.logger = Logger.new('log/test.log')
+
   config.after_initialize do
     Bullet.enable = true
     Bullet.bullet_logger = true

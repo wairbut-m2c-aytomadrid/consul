@@ -3,6 +3,14 @@ FROM ruby:2.3.6
 # Install essential Linux packages
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev postgresql-client nodejs imagemagick sudo
 
+RUN sudo apt-get install -y libxss1 libappindicator1 libindicator7 unzip libnss3 \
+  chromium
+
+RUN wget -N http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
+RUN unzip chromedriver_linux64.zip
+RUN mv chromedriver /usr/local/bin/
+RUN rm chromedriver_linux64.zip
+
 # Files created inside the container repect the ownership
 RUN adduser --shell /bin/bash --disabled-password --gecos "" consul \
   && adduser consul sudo \
