@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180713103402) do
+ActiveRecord::Schema.define(version: 20180713124501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -736,6 +736,31 @@ ActiveRecord::Schema.define(version: 20180713103402) do
   end
 
   add_index "milestone_statuses", ["hidden_at"], name: "index_milestone_statuses_on_hidden_at", using: :btree
+
+  create_table "milestone_translations", force: :cascade do |t|
+    t.integer  "milestone_id", null: false
+    t.string   "locale",       null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.string   "title"
+    t.text     "description"
+  end
+
+  add_index "milestone_translations", ["locale"], name: "index_milestone_translations_on_locale", using: :btree
+  add_index "milestone_translations", ["milestone_id"], name: "index_milestone_translations_on_milestone_id", using: :btree
+
+  create_table "milestones", force: :cascade do |t|
+    t.integer  "milestoneable_id"
+    t.string   "milestoneable_type"
+    t.string   "title",              limit: 80
+    t.text     "description"
+    t.datetime "publication_date"
+    t.integer  "status_id"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "milestones", ["status_id"], name: "index_milestones_on_status_id", using: :btree
 
   create_table "moderators", force: :cascade do |t|
     t.integer "user_id"

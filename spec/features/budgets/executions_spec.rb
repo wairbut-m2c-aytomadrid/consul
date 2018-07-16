@@ -12,7 +12,7 @@ feature 'Executions' do
   let!(:investment4) { create(:budget_investment, :selected,     heading: heading, price: 600, ballot_lines_count: 600) }
 
   scenario 'only displays investments with milestones' do
-    create(:budget_investment_milestone, investment: investment1)
+    create(:milestone, milestoneable: investment1)
 
     visit budget_path(budget)
     click_link 'See results'
@@ -29,7 +29,7 @@ feature 'Executions' do
 
   context 'Images' do
     scenario 'renders milestone image if available' do
-      milestone1 = create(:budget_investment_milestone, investment: investment1)
+      milestone1 = create(:milestone, milestoneable: investment1)
       create(:image, imageable: milestone1)
 
       visit budget_path(budget)
@@ -42,7 +42,7 @@ feature 'Executions' do
     end
 
     scenario 'renders investment image if no milestone image is available' do
-      create(:budget_investment_milestone, investment: investment2)
+      create(:milestone, milestoneable: investment2)
       create(:image, imageable: investment2)
 
       visit budget_path(budget)
@@ -55,7 +55,7 @@ feature 'Executions' do
     end
 
     scenario 'renders default image if no milestone nor investment images are available' do
-      create(:budget_investment_milestone, investment: investment4)
+      create(:milestone, milestoneable: investment4)
 
       visit budget_path(budget)
 
@@ -67,11 +67,11 @@ feature 'Executions' do
     end
 
     scenario "renders last milestone's image if investment has multiple milestones with images associated" do
-      milestone1 = create(:budget_investment_milestone, investment: investment1,
-                                                        publication_date: Date.yesterday)
+      milestone1 = create(:milestone, milestoneable: investment1,
+                                      publication_date: Date.yesterday)
 
-      milestone2 = create(:budget_investment_milestone, investment: investment1,
-                                                        publication_date: Date.tomorrow)
+      milestone2 = create(:milestone, milestoneable: investment1,
+                                      publication_date: Date.tomorrow)
 
       create(:image, imageable: milestone1, title: 'First milestone image')
       create(:image, imageable: milestone2, title: 'Second milestone image')
@@ -93,8 +93,8 @@ feature 'Executions' do
     let!(:status2) { create(:milestone_status, name: I18n.t('seeds.budgets.statuses.bidding')) }
 
     scenario 'by milestone status', :js do
-      create(:budget_investment_milestone, investment: investment1, status: status1)
-      create(:budget_investment_milestone, investment: investment2, status: status2)
+      create(:milestone, milestoneable: investment1, status: status1)
+      create(:milestone, milestoneable: investment2, status: status2)
       create(:milestone_status, name: I18n.t('seeds.budgets.statuses.executing_project'))
 
       visit budget_path(budget)
@@ -122,12 +122,12 @@ feature 'Executions' do
     end
 
     xscenario 'are based on latest milestone status', :js do
-      create(:budget_investment_milestone, investment: investment1,
-                                           publication_date: Date.yesterday,
-                                           status: status1)
+      create(:milestone, milestoneable: investment1,
+                         publication_date: Date.yesterday,
+                         status: status1)
 
-      create(:budget_investment_milestone, investment: investment1,
-                                           publication_date: Date.tomorrow,
+      create(:milestone, milestoneable: investment1,
+                         publication_date: Date.tomorrow,
                                            status: status2)
 
       visit budget_path(budget)

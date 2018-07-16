@@ -7,7 +7,7 @@ module BudgetExecutionsHelper
              .sort_by_ballots
              .joins(:milestones)
              .distinct
-             .where('budget_investment_milestones.status_id = ?', params[:status])
+             .where(milestones: {status_id: params[:status]})
     else
       heading.investments
              .selected

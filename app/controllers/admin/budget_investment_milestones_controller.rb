@@ -2,19 +2,19 @@ class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
   include Translatable
 
   before_action :load_budget_investment, only: [:index, :new, :create, :edit, :update, :destroy]
-  before_action :load_budget_investment_milestone, only: [:edit, :update, :destroy]
+  before_action :load_milestone, only: [:edit, :update, :destroy]
   before_action :load_statuses, only: [:index, :new, :create, :edit, :update]
 
   def index
   end
 
   def new
-    @milestone = Budget::Investment::Milestone.new
+    @milestone = Milestone.new
   end
 
   def create
-    @milestone = Budget::Investment::Milestone.new(milestone_params)
-    @milestone.investment = @investment
+    @milestone = Milestone.new(milestone_params)
+    @milestone.milestoneable = @investment
     if @milestone.save
       investment_id = @investment.original_spending_proposal_id || @investment.id
       redirect_to admin_budget_budget_investment_path(budget_id: @investment.budget, id: investment_id),
@@ -50,19 +50,19 @@ class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
     attributes = [:title, :description, :publication_date, :budget_investment_id, :status_id,
                   image_attributes: image_attributes, documents_attributes: documents_attributes]
 
-    params.require(:budget_investment_milestone).permit(*attributes, translation_params(params[:budget_investment_milestone]))
+    params.require(:milestone).permit(*attributes, translation_params(params[:milestone]))
   end
 
   def load_budget_investment
     @investment = Budget::Investment.find(params[:budget_investment_id])
   end
 
-  def load_budget_investment_milestone
+  def load_milestone
     @milestone = get_milestone
   end
 
   def get_milestone
-    Budget::Investment::Milestone.find(params[:id])
+    Milestone.find(params[:id])
   end
 
   def load_statuses
@@ -70,7 +70,7 @@ class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
   end
 
   def resource_model
-    Budget::Investment::Milestone
+    Milestone
   end
 
   def resource
