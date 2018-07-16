@@ -89,13 +89,13 @@ feature 'Executions' do
 
   context 'Filters' do
 
-    let!(:status1) { create(:budget_investment_status, name: I18n.t('seeds.budgets.statuses.studying_project')) }
-    let!(:status2) { create(:budget_investment_status, name: I18n.t('seeds.budgets.statuses.bidding')) }
+    let!(:status1) { create(:milestone_status, name: I18n.t('seeds.budgets.statuses.studying_project')) }
+    let!(:status2) { create(:milestone_status, name: I18n.t('seeds.budgets.statuses.bidding')) }
 
     scenario 'by milestone status', :js do
       create(:budget_investment_milestone, investment: investment1, status: status1)
       create(:budget_investment_milestone, investment: investment2, status: status2)
-      create(:budget_investment_status, name: I18n.t('seeds.budgets.statuses.executing_project'))
+      create(:milestone_status, name: I18n.t('seeds.budgets.statuses.executing_project'))
 
       visit budget_path(budget)
 
