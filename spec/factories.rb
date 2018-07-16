@@ -460,9 +460,9 @@ FactoryBot.define do
     sequence(:description) { |n| "Milestone status #{n} description" }
   end
 
-  factory :budget_investment_milestone, class: 'Budget::Investment::Milestone' do
-    association :investment, factory: :budget_investment
+  factory :milestone, class: 'Milestone' do
     association :status, factory: :milestone_status
+    association :milestoneable, factory: :budget_investment
     sequence(:title)     { |n| "Budget investment milestone #{n} title" }
     description          'Milestone description'
     publication_date     { Date.current }

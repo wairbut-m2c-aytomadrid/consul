@@ -3,7 +3,7 @@
 <%= form_for [:admin, @investment.budget, @investment, @milestone] do |f| %>
 
   <%= f.hidden_field :title, value: l(Time.current, format: :datetime),
-                             maxlength: Budget::Investment::Milestone.title_max_length %>
+                             maxlength: Milestone.title_max_length %>
 
   <div class="small-12 medium-6 margin-bottom">
     <%= f.select :status_id,
