@@ -11,7 +11,7 @@ class Budget
       globalize_accessors locales: [:en, :es, :fr, :nl, :val, :pt_br]
 
       belongs_to :investment
-      belongs_to :status, class_name: 'Budget::Investment::Status'
+      belongs_to :status, class_name: 'Milestone::Status'
 
       validates :title, presence: true
       validates :investment, presence: true

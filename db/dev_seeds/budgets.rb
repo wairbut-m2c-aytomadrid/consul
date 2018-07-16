@@ -184,15 +184,15 @@ section "Marking investments as visible to valuators" do
 end
 
 section "Creating default Investment Milestone Statuses" do
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.studying_project'))
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.bidding'))
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.executing_project'))
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.executed'))
+  Milestone::Status.create(name: I18n.t('seeds.budgets.statuses.studying_project'))
+  Milestone::Status.create(name: I18n.t('seeds.budgets.statuses.bidding'))
+  Milestone::Status.create(name: I18n.t('seeds.budgets.statuses.executing_project'))
+  Milestone::Status.create(name: I18n.t('seeds.budgets.statuses.executed'))
 end
 
 section "Creating investment milestones" do
   Budget::Investment.all.each do |investment|
-    milestone = Budget::Investment::Milestone.new(investment_id: investment.id, publication_date: Date.tomorrow, status_id: Budget::Investment::Status.all.sample)
+    milestone = Budget::Investment::Milestone.new(investment_id: investment.id, publication_date: Date.tomorrow, status_id: Milestone::Status.all.sample)
     I18n.available_locales.map do |locale|
       neutral_locale = locale.to_s.downcase.underscore.to_sym
       Globalize.with_locale(neutral_locale) do
