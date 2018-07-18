@@ -60,8 +60,15 @@ namespace :admin do
       resources :budget_headings
     end
 
+    # alts:
+    #  - set default aparam in routes
+    #  - subclass controller
+    #  - switch on "investment_id", "proposal_id", etc. (dynamically?)
+    #  - special parameter for new action
+
     resources :budget_investments, only: [:index, :show, :edit, :update] do
       resources :milestones, controller: 'budget_investment_milestones'
+                             #defaults: {milestoneable_type: 'Budget::'}
       member { patch :toggle_selection }
     end
 

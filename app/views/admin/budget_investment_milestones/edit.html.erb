@@ -1,4 +1,6 @@
-<%= back_link_to admin_budget_budget_investment_path(@investment.budget, @investment) %>
+<%#<%= back_link_to admin_budget_budget_investment_path(@investment.budget, @investment) %>%>
+<%#<%= back_link_to polymorphic_path(@milestoneable) %>%>
+    <%= back_link_to polymorphic_path([:admin, @milestoneable.budget, @milestoneable]) %>
 
 <h2><%= t("admin.milestones.edit.title") %></h2>
 

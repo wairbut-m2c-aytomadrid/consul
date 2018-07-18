@@ -18,6 +18,17 @@ class Milestone < ActiveRecord::Base
 
   scope :order_by_publication_date, -> { order(publication_date: :asc) }
 
+  def self.find_milestoneable(type, id)
+    # TODO maybe try adding included callback to Milestoneable concern, where
+    # base is added to a class var on Milestone, or Milestoneable. Can then
+    # be retrieved. Then just make sure type string is one of them.
+    #
+    # Or:
+    #
+    # ObjectSpace.each_object(Class).select { |c| c.included_modules.include? MyMod }
+    type.constantize.find(id)
+  end
+
   def self.title_max_length
     80
   end

@@ -1,12 +1,13 @@
 class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
   include Translatable
 
-  before_action :load_budget_investment, only: [:index, :new, :create, :edit, :update, :destroy]
+  # TODO don't need it for everything
+  before_action :load_milestoneable, only: [:index, :new, :create, :edit, :update, :destroy]
   before_action :load_milestone, only: [:edit, :update, :destroy]
   before_action :load_statuses, only: [:index, :new, :create, :edit, :update]
 
-  def index
-  end
+  #def index
+  #end
 
   def new
     @milestone = Milestone.new
@@ -14,11 +15,17 @@ class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
 
   def create
     @milestone = Milestone.new(milestone_params)
-    @milestone.milestoneable = @investment
+    @milestone.milestoneable = @milestoneable
     if @milestone.save
-      investment_id = @investment.original_spending_proposal_id || @investment.id
-      redirect_to admin_budget_budget_investment_path(budget_id: @investment.budget, id: investment_id),
-                  notice: t('admin.milestones.create.notice')
+      if @milestoneable.is_a? Budget::Investment
+        @investment = @milestoneable
+        investment_id = @investment.original_spending_proposal_id || @investment.id
+        redirect_to admin_budget_budget_investment_path(budget_id: @investment.budget, id: investment_id),
+                    notice: t('admin.milestones.create.notice')
+      else
+        redirect_to polymorphic_path([:admin, @milestoneable, @milestone]),
+                    notice: t('admin.milestones.create.notice')
+      end
     else
       render :new
     end
@@ -29,8 +36,9 @@ class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
 
   def update
     if @milestone.update(milestone_params)
-      redirect_to admin_budget_budget_investment_path(@investment.budget, @investment),
-                  notice: t('admin.milestones.update.notice')
+      #redirect_to admin_budget_budget_investment_path(@investment.budget, @investment),
+        redirect_to polymorphic_path([:admin, @milestoneable, @milestone]),
+                    notice: t('admin.milestones.update.notice')
     else
       render :edit
     end
@@ -38,7 +46,7 @@ class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
 
   def destroy
     @milestone.destroy
-    redirect_to admin_budget_budget_investment_path(@investment.budget, @investment),
+    redirect_to polymorphic_path([:admin, @milestoneable, @milestone]),
                 notice: t('admin.milestones.delete.notice')
   end
 
@@ -47,14 +55,26 @@ class Admin::BudgetInvestmentMilestonesController < Admin::BaseController
   def milestone_params
     image_attributes = [:id, :title, :attachment, :cached_attachment, :user_id, :_destroy]
     documents_attributes = [:id, :title, :attachment, :cached_attachment, :user_id, :_destroy]
-    attributes = [:title, :description, :publication_date, :budget_investment_id, :status_id,
+    attributes = [:title, :description, :publication_date, :status_id,
+                  :milestoneable_type, :milestoneable_id,
                   image_attributes: image_attributes, documents_attributes: documents_attributes]
 
     params.require(:milestone).permit(*attributes, translation_params(params[:milestone]))
   end
 
-  def load_budget_investment
-    @investment = Budget::Investment.find(params[:budget_investment_id])
+  #def load_milestoneable
+    #@milestoneable = Milestone.find_milestoneable(params[:milestoneable_type],
+                                                  #params[:milestoneable_id])
+  #end
+
+  def load_milestoneable
+    @milestoneable = 
+      case
+      when params[:budget_investment_id]
+        Budget::Investment.find(params[:budget_investment_id])
+      else
+        raise "wrong params"
+      end
   end
 
   def load_milestone

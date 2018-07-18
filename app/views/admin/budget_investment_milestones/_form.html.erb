@@ -1,9 +1,11 @@
 <%= render "globalize_locales" %>
 
-<%= form_for [:admin, @investment.budget, @investment, @milestone] do |f| %>
+<%= form_for [:admin, @milestoneable.budget, @milestoneable, @milestone] do |f| %>
 
   <%= f.hidden_field :title, value: l(Time.current, format: :datetime),
                              maxlength: Milestone.title_max_length %>
+
+  <%= f.hidden_field :milestoneable_type, value: @milestoneable.class.name %>
 
   <div class="small-12 medium-6 margin-bottom">
     <%= f.select :status_id,
