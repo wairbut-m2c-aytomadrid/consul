@@ -17,6 +17,10 @@ module Budgets
       if params[:status].present?
         @headings = @headings.where(filter_investment_by_latest_milestone, params[:status])
       end
+
+      if params[:id] == '2016'
+        render 'spending_proposals/executions'
+      end
     end
 
     private
