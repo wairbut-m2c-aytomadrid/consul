@@ -89,7 +89,7 @@ feature 'Admin budgets' do
       visit admin_budgets_path
       click_link 'Create new budget'
 
-      fill_in 'budget_name', with: 'M30 - Summer campaign'
+      fill_in 'budget_name_en', with: 'M30 - Summer campaign'
       select 'Accepting projects', from: 'budget[phase]'
 
       click_button 'Create Budget'
@@ -176,7 +176,7 @@ feature 'Admin budgets' do
       visit admin_budgets_path
       click_link 'Edit budget'
 
-      fill_in 'budget_name', with: 'More trees on the streets'
+      fill_in 'budget_name_en', with: 'More trees on the streets'
       click_button 'Update Budget'
 
       expect(page).to have_content('More trees on the streets')

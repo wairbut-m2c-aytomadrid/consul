@@ -1,7 +1,20 @@
+<%= render "admin/shared/globalize_locales", resource: @budget %>
+
 <%= form_for [:admin, @budget] do |f| %>
 
   <div class="small-12 medium-9 column">
-    <%= f.text_field :name, maxlength: Budget.title_max_length %>
+    <%= f.label :name, t("activerecord.attributes.budget.name")%>
+    <% @budget.globalize_locales.each do |locale| %>
+      <%= hidden_field_tag "delete_translations[#{locale}]", 0 %>
+      <% globalize(locale) do %>
+        <%= f.text_field "name_#{locale}",
+                         class: "js-globalize-attribute",
+                         data: { locale: locale },
+                         style: display_translation?(locale),
+                         maxlength: Budget.title_max_length,
+                         label: false %>
+      <% end %>
+    <% end %>
   </div>
 
   <div class="margin-top">
