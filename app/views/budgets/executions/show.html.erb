@@ -11,33 +11,59 @@
   <%= render 'shared/canonical', href: budget_executions_url(@budget) %>
 <% end %>
 
-<div class="budgets-stats">
-  <div class="expanded no-margin-top padding header">
+<% if spending_proposals? %>
+  <div class="expanded spending-proposals results no-margin-top">
     <div class="row">
-      <div class="small-12 column">
-        <%= back_link_to budgets_path %>
-        <h2 class="margin-top">
-          <%= t("budgets.executions.heading") %><br>
-          <span><%= @budget.name %></span>
-        </h2>
+      <div class="small-12 column padding text-center">
+        <%= link_to budgets_welcome_path, class: "left back" do %>
+          <i class="icon-angle-left"></i>
+          <%= t("shared.back") %>
+        <% end %>
+
+        <h1 class="title"><%= t("spending_proposals.results.heading") %></h1>
       </div>
     </div>
   </div>
-</div>
+<% else %>
+  <div class="budgets-stats">
+    <div class="expanded no-margin-top padding header">
+      <div class="row">
+        <div class="small-12 column">
+          <%= back_link_to budgets_path %>
+          <h2 class="margin-top">
+            <%= t("budgets.executions.heading") %><br>
+            <span><%= @budget.name %></span>
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <div class="row margin-top">
   <div class="small-12 column">
     <ul class="tabs">
-      <li class="tabs-title">
-        <span class="show-for-sr"><%= t("shared.you_are_in") %></span>
-        <%= link_to t("budgets.results.link"), custom_budget_results_path(@budget) %>
-      </li>
-      <li class="tabs-title">
-        <%= link_to t("budgets.stats.link"), custom_budget_stats_path(@budget) %>
-      </li>
-      <li class="tabs-title is-active">
-        <%= link_to t("budgets.executions.link"), custom_budget_executions_path(@budget), class: 'is-active' %>
-      </li>
+      <% if spending_proposals? %>
+        <li class="tabs-title">
+          <%= link_to t("spending_proposals.results.results_link"), participatory_budget_results_path %>
+        </li>
+        <li class="tabs-title">
+        <%= link_to t("spending_proposals.results.stats_link"), participatory_budget_stats_path %>
+        </li>
+        <li class="tabs-title is-active">
+          <%= link_to t("spending_proposals.results.executions_link"), participatory_budget_stats_path, class: 'is-active' %>
+        </li>
+      <% else %>
+        <li class="tabs-title">
+          <%= link_to t("budgets.results.link"), custom_budget_results_path(@budget) %>
+        </li>
+        <li class="tabs-title">
+          <%= link_to t("budgets.stats.link"), custom_budget_stats_path(@budget) %>
+        </li>
+        <li class="tabs-title is-active">
+          <%= link_to t("budgets.executions.link"), custom_budget_executions_path(@budget), class: 'is-active' %>
+        </li>
+      <% end %>
     </ul>
   </div>
 </div>
@@ -48,7 +74,7 @@
       <%= t("budgets.executions.heading_selection_title") %>
     </h3>
     <ul class="menu vertical no-margin-top no-padding-top">
-      <% @headings.each do |heading| %>
+      <% @investments_by_heading.each_pair do |heading, investments| %>
         <li>
           <%= link_to heading.name, "#" + heading.name.parameterize %>
         </li>
@@ -60,12 +86,22 @@
     <%= form_tag(custom_budget_executions_path(@budget), method: :get) do %>
       <div class="small-12 medium-3 column">
         <%= label_tag t("budgets.executions.filters.label") %>
-        <%= select_tag :status, options_from_collection_for_select(
-          @statuses, :id, :name, params[:status]
-        ), class: "js-submit-on-change", prompt: t("budgets.executions.filters.all") %>
+        <%= select_tag :status,
+                      options_from_collection_for_select(@statuses,
+                      :id, lambda { |s| "#{s.name} (#{filters_select_counts(s.id)})" },
+                      params[:status]),
+                      class: "js-submit-on-change",
+                      prompt: t("budgets.executions.filters.all",
+                      count: @budget.investments.winners.with_milestones.count) %>
       </div>
     <% end %>
 
-    <%= render 'budgets/executions/investments' %>
+    <% if @investments_by_heading.any? %>
+      <%= render 'budgets/executions/investments' %>
+    <% else %>
+      <div class="callout primary clear">
+        <%= t("budgets.executions.no_winner_investments") %>
+      </div>
+    <% end %>
   </div>
 </div>

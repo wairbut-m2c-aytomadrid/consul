@@ -1,20 +1,13 @@
 module BudgetExecutionsHelper
 
-  def winner_investments(heading)
-    if params[:status].present?
-      heading.investments
-             .selected
-             .sort_by_ballots
-             .joins(:milestones)
-             .distinct
-             .where('budget_investment_milestones.status_id = ?', params[:status])
-    else
-      heading.investments
-             .selected
-             .sort_by_ballots
-             .joins(:milestones)
-             .distinct
-    end
+  def spending_proposals?
+    @budget.slug == '2016'
+  end
+
+  def filters_select_counts(status)
+    @budget.investments.winners.with_milestones.select { |i| i.milestones
+                                      .published.with_status.order_by_publication_date
+                                      .last.status_id == status rescue false }.count
   end
 
 end
