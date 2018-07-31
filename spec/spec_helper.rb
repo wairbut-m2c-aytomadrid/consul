@@ -21,10 +21,6 @@ RSpec.configure do |config|
   config.include(ActiveSupport::Testing::TimeHelpers)
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with :truncation
-  end
-
-  config.before(:suite) do
     if config.use_transactional_fixtures?
       raise(<<-MSG)
         Delete line `config.use_transactional_fixtures = true` from rails_helper.rb
@@ -37,7 +33,8 @@ RSpec.configure do |config|
         uncommitted transaction data setup over the spec's database connection.
       MSG
     end
-    DatabaseCleaner.clean_with(:truncation)
+    #DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.clean_with(:deletion)
   end
 
   config.before do |example|
@@ -57,13 +54,15 @@ RSpec.configure do |config|
       # Driver is probably for an external browser with an app
       # under test that does *not* share a database connection with the
       # specs, so use truncation strategy.
-      DatabaseCleaner.strategy = :truncation
+      #DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.strategy = :deletion
     end
   end
 
   config.before(:each, :headless_chrome) do
     Capybara.current_driver  = :headless_chrome
-    DatabaseCleaner.strategy = :truncation
+    #DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :deletion
   end
 
   config.after(:each, :headless_chrome) do
