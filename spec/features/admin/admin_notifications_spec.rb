@@ -180,7 +180,7 @@ feature "Admin Notifications" do
     notification = create(:admin_notification)
     visit edit_admin_admin_notification_path(notification)
 
-    fill_in :admin_notification_title, with: ''
+    fill_in :admin_notification_title_en, with: ''
     click_button "Update notification"
 
     expect(page).to have_content error_message
@@ -231,6 +231,111 @@ feature "Admin Notifications" do
       click_button "Create notification"
 
       expect(page).to have_content(I18n.t("admin.segment_recipient.#{user_segment}"))
+    end
+  end
+
+  context "Translations" do
+
+    let(:notification) { create(:admin_notification,
+                                title_en: 'Title in English',
+                                body_en:  'Body in English',
+                                title_es: 'Título en Español',
+                                body_es:  'Texto en Español',
+                                link: 'https://www.decide.madrid.es/vota') }
+
+    before do
+      @edit_notification_url = edit_admin_admin_notification_path(notification)
+    end
+
+    scenario "Add a translation", :js do
+      visit @edit_notification_url
+
+      select "Français", from: "translation_locale"
+      fill_in 'admin_notification_title_fr', with: 'Titre en Français'
+      fill_in 'admin_notification_body_fr', with: 'Texte en Français'
+
+      click_button 'Update notification'
+
+      visit @edit_notification_url
+      expect(page).to have_field('admin_notification_body_en', with: 'Body in English')
+
+      click_link "Español"
+      expect(page).to have_field('admin_notification_body_es', with: 'Texto en Español')
+
+      click_link "Français"
+      expect(page).to have_field('admin_notification_body_fr', with: 'Texte en Français')
+    end
+
+    scenario "Update a translation", :js do
+      visit @edit_notification_url
+
+      click_link "Español"
+      fill_in 'admin_notification_title_es', with: 'Título correcto en Español'
+
+      click_button 'Update notification'
+
+      select('Español', from: 'locale-switcher')
+
+      expect(page).to have_content('Título correcto en Español')
+    end
+
+    scenario "Remove a translation", :js do
+
+      visit @edit_notification_url
+
+      click_link "Español"
+      click_link "Remove language"
+
+      expect(page).not_to have_link "Español"
+
+      click_button "Update notification"
+      visit @edit_notification_url
+      expect(page).not_to have_link "Español"
+    end
+
+    context "Globalize javascript interface" do
+
+      scenario "Highlight current locale", :js do
+        visit @edit_notification_url
+
+        expect(find("a.js-globalize-locale-link.is-active")).to have_content "English"
+
+        select('Español', from: 'locale-switcher')
+
+        expect(find("a.js-globalize-locale-link.is-active")).to have_content "Español"
+      end
+
+      scenario "Highlight selected locale", :js do
+        visit @edit_notification_url
+
+        expect(find("a.js-globalize-locale-link.is-active")).to have_content "English"
+
+        click_link "Español"
+
+        expect(find("a.js-globalize-locale-link.is-active")).to have_content "Español"
+      end
+
+      scenario "Show selected locale form", :js do
+        visit @edit_notification_url
+
+        expect(page).to have_field('admin_notification_body_en', with: 'Body in English')
+
+        click_link "Español"
+
+        expect(page).to have_field('admin_notification_body_es', with: 'Texto en Español')
+      end
+
+      scenario "Select a locale and add it to the notification form", :js do
+        visit @edit_notification_url
+
+        select "Français", from: "translation_locale"
+
+        expect(page).to have_link "Français"
+
+        click_link "Français"
+
+        expect(page).to have_field('admin_notification_body_fr')
+      end
     end
   end
 end

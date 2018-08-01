@@ -1,12 +1,38 @@
+<%= render "admin/shared/globalize_locales", resource: @admin_notification  %>
+
 <%= form_for [:admin, @admin_notification] do |f| %>
   <%= render 'shared/errors', resource: @admin_notification %>
 
+  <% @admin_notification.globalize_locales.each do |locale| %>
+    <%= hidden_field_tag "delete_translations[#{locale}]", 0 %>
+  <% end %>
+
   <%= f.select :segment_recipient, options_for_select(user_segments_options,
                                                       @admin_notification[:segment_recipient]) %>
-  <%= f.text_field :title %>
+
+  <%= f.label :title %>
+  <% @admin_notification.globalize_locales.each do |locale| %>
+    <% globalize(locale) do %>
+      <%= f.text_field "title_#{locale}",
+                       class: "js-globalize-attribute",
+                       data: {locale: locale},
+                       style: display_translation?(locale),
+                       label: false %>
+    <% end %>
+  <% end %>
+
   <%= f.text_field :link %>
+
   <%= f.label :body %>
-  <%= f.text_area :body, label: false %>
+  <% @admin_notification.globalize_locales.each do |locale| %>
+    <% globalize(locale) do %>
+      <%= f.text_area "body_#{locale}",
+                      class: "js-globalize-attribute",
+                      data: {locale: locale},
+                      style: display_translation?(locale),
+                      label: false %>
+    <% end %>
+  <% end %>
 
   <div class="margin-top">
     <%= f.submit t("admin.admin_notifications.#{admin_submit_action(@admin_notification)}.submit_button"),
