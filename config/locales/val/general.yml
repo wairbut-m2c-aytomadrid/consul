@@ -306,8 +306,6 @@ val:
     form:
       geozone: Ámbit d'actuació
       proposal_external_url: Enllaç a documentació adicional
-      proposal_question: Pregunta de la proposta
-      proposal_question_example_html: "Deu ser resumida en una pregunta amb resposta Sí o No. <br>Ex. 'Està vosté d'acort en peatonalitzar el carrer Major?'"
       proposal_responsible_name: Nom i cognoms de la persona que fa aquesta proposta
       proposal_responsible_name_note: "(individualment o com representant d'un col·lectiu; no es mostrarà públicament)"
       proposal_summary: Resum de la proposta

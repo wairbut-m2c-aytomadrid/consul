@@ -298,8 +298,6 @@ nl:
     form:
       geozone: Regio
       proposal_external_url: Link naar meet informatie
-      proposal_question: Vraag
-      proposal_question_example_html: Moet samengevat worden in een vraag met een ja/nee antwoord. <br>E.g. 'Ben je het eens met autovrije Geldersekade?'
       proposal_responsible_name: Volledige naam van persoon die het voorstel doet
       proposal_responsible_name_note: "(individueel of als vertegenwoordiger van een collectief; niet publiek zichtbaar)"
       proposal_summary: Samenvatting voorstel

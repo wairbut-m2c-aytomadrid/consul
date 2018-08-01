@@ -246,10 +246,8 @@ he:
       done: הבעיה נפתרה
       other: סיבה אחרת
     form:
-      geozone: היקף הפעילות
       proposal_external_url: קישור למידע נוסף
-      proposal_question: השאלה המוצעת
-      proposal_responsible_name: שם ושם משפחה מלא של מציע/ת ההצעה
+      geozone: היקף הפעילות
       proposal_responsible_name_note: "“(כאדם פרטי או כנציג/ה של התאגדות תושבים. השם יישמר חסוי מפני שאר המשתמשים)\""
       proposal_summary: תקציר ההצעה
       proposal_summary_note: "(200 תווים לכל היותר)"

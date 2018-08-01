@@ -318,8 +318,8 @@ en:
       done: Done
       other: Other
     form:
-      geozone: Scope of operation
       proposal_external_url: Link to additional documentation
+      geozone: Scope of operation
       proposal_responsible_name: Full name of the person submitting the proposal
       proposal_responsible_name_note: "(individually or as representative of a collective; will not be displayed publically)"
       proposal_summary: Proposal summary

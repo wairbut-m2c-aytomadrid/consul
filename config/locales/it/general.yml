@@ -309,8 +309,6 @@ it:
     form:
       geozone: ""
       proposal_external_url: ""
-      proposal_question: ""
-      proposal_question_example_html: ""
       proposal_responsible_name: ""
       proposal_responsible_name_note: ""
       proposal_summary: ""
