@@ -9,6 +9,12 @@ class Legislation::Process < ActiveRecord::Base
   acts_as_paranoid column: :hidden_at
   acts_as_taggable_on :customs
 
+  translates :title,           touch: :true
+  translates :summary,         touch: :true
+  translates :description,     touch: :true
+  translates :additional_info, touch: :true
+  globalize_accessors locales: I18n.available_locales.map(&:to_s).map(&:underscore).map(&:to_sym)
+
   PHASES_AND_PUBLICATIONS = %i(debate_phase allegations_phase proposals_phase draft_publication result_publication).freeze
 
   has_many :draft_versions, -> { order(:id) }, class_name: 'Legislation::DraftVersion',
