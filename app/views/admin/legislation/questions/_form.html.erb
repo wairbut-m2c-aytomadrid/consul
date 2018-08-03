@@ -1,4 +1,6 @@
-<%= form_for [:admin, @process, @question], url: url, html: {data: {watch_changes: true}} do |f| %>
+<%= render "admin/shared/globalize_locales", resource: @question  %>
+
+<%= translatable_form_for [:admin, @process, @question], url: url, html: {data: {watch_changes: true}} do |f| %>
 
   <% if @question.errors.any? %>
     <div class="small-12 medium-9 column">
@@ -16,8 +18,10 @@
   <% end %>
 
   <div class="small-12 medium-9 column">
-    <%= f.label :title, t("admin.legislation.questions.form.title") %>
-    <%= f.text_area :title, rows: 5, label: false, placeholder: t("admin.legislation.questions.form.title_placeholder") %>
+    <%= f.translatable_text_area :title,
+                                 rows: 5,
+                                 placeholder: t("admin.legislation.questions.form.title_placeholder"),
+                                 label: t("admin.legislation.questions.form.title") %>
   </div>
 
   <div class="small-12 medium-9 column">

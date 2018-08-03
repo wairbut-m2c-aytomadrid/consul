@@ -12,3 +12,4 @@ App.LegislationAdmin =
           else
             $(this).val("")
 
+            # TODO go to default locale when click "Add Question"?
