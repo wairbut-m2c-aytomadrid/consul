@@ -51,7 +51,7 @@ class Admin::Widget::CardsController < Admin::BaseController
   end
 
   def resource
-   Widget::Card.find(params[:id])
+    Widget::Card.find(params[:id])
   end
 
   def resource_model
