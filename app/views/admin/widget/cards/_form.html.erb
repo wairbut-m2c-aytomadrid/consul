@@ -1,58 +1,21 @@
 <%= render "admin/shared/globalize_locales", resource: @card %>
 
-<%= form_for [:admin, @card] do |f| %>
-
-  <% @card.globalize_locales.each do |locale| %>
-    <%= hidden_field_tag "delete_translations[#{locale}]", 0 %>
-  <% end %>
+<%= translatable_form_for [:admin, @card] do |f| %>
 
   <div class="small-12 medium-6">
     <%= f.label :label %>
-    <% @card.globalize_locales.each do |locale| %>
-      <% globalize(locale) do %>
-        <%= f.text_field "label_#{locale}",
-                         class: "js-globalize-attribute",
-                         data: {locale: locale},
-                         style: display_translation?(locale),
-                         label: false %>
-      <% end %>
-    <% end %>
+    <%= f.translatable_text_field :label %>
   </div>
 
   <%= f.label :title %>
-  <% @card.globalize_locales.each do |locale| %>
-    <% globalize(locale) do %>
-      <%= f.text_field "title_#{locale}",
-                       class: "js-globalize-attribute",
-                       data: {locale: locale},
-                       style: display_translation?(locale),
-                       label: false %>
-    <% end %>
-  <% end %>
+  <%= f.translatable_text_field :title %>
 
   <%= f.label :description %>
-  <% @card.globalize_locales.each do |locale| %>
-    <% globalize(locale) do %>
-      <%= f.text_field "description_#{locale}",
-                       rows: 5,
-                       class: "js-globalize-attribute",
-                       data: {locale: locale},
-                       style: display_translation?(locale),
-                       label: false %>
-    <% end %>
-  <% end %>
+  <%= f.translatable_text_area :description, rows: 5 %>
 
   <div class="small-12 medium-6">
     <%= f.label :link_text %>
-    <% @card.globalize_locales.each do |locale| %>
-      <% globalize(locale) do %>
-        <%= f.text_field "link_text_#{locale}",
-                         class: "js-globalize-attribute",
-                         data: {locale: locale},
-                         style: display_translation?(locale),
-                         label: false %>
-      <% end %>
-    <% end %>
+    <%= f.translatable_text_area :link_text %>
   </div>
 
   <div class="small-12 medium-6">
