@@ -5,7 +5,9 @@ class Banner < ActiveRecord::Base
 
   translates :title,       touch: true
   translates :description, touch: true
-  globalize_accessors locales: [:en, :es, :fr, :nl, :val, :pt_br]
+  #globalize_accessors locales: [:en, :es, :fr, :nl, :val, :pt_br]
+  globalize_accessors locales: I18n.available_locales.map(&:to_s).map(&:underscore)
+  #globalize_accessors locales: Rails.config
 
   validates :title, presence: true,
                     length: { minimum: 2 }

@@ -25,6 +25,10 @@ module Consul
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', 'custom', '**', '*.{rb,yml}')]
 
+    #config.available_locales_for_admin_generated_content = config.I18n.available_locales
+                                                                      #.map(&:to_s)
+                                                                      #.map(&:underscore)
+
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
