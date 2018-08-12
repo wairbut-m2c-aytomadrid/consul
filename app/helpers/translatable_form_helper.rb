@@ -5,7 +5,7 @@ module TranslatableFormHelper
     form_for(record, options.merge(builder: TranslatableFormBuilder)) do |f|
 
       object.globalize_locales.each do |locale|
-        concat translation_enabled_tag(locale, enable_locale?(resource, locale))
+        concat translation_enabled_tag(locale, enable_locale?(object, locale))
       end
 
       yield(f)
