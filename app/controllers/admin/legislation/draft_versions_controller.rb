@@ -1,3 +1,17 @@
+
+module ActiveRecord                                                   
+  class AttributeSet # :nodoc:
+       def write_from_user(name, value)
+         Rails.logger.info "DEBUGGG"
+         require 'pp'
+         Rails.logger.info name
+         Rails.logger.info value
+         pp attributes
+         attributes[name] = self[name].with_value_from_user(value)
+       end
+  end
+end
+
 class Admin::Legislation::DraftVersionsController < Admin::Legislation::BaseController
   include Translatable
 
