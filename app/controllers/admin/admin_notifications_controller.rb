@@ -64,16 +64,12 @@ class Admin::AdminNotificationsController < Admin::BaseController
 
     def admin_notification_params
       attributes = [:title, :body, :link, :segment_recipient,
-                    *translation_params(params[:admin_notification])]
+                    *translation_params(AdminNotification)]
 
       params.require(:admin_notification).permit(attributes)
     end
 
     def resource
       AdminNotification.find(params[:id])
-    end
-
-    def resource_model
-      AdminNotification
     end
 end

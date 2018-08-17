@@ -3,7 +3,7 @@ class AdminNotification < ActiveRecord::Base
 
   translates :title, touch: :true
   translates :body,  touch: :true
-  globalize_accessors locales: [:en, :es, :fr, :nl, :val, :pt_br]
+  globalize_accessors locales: I18n.available_locales.map { |l| l.to_s.underscore.to_sym }
 
   validates :title, presence: true
   validates :body, presence: true
