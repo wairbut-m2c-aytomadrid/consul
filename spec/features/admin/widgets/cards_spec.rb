@@ -2,6 +2,11 @@ require 'rails_helper'
 
 feature 'Cards' do
 
+  it_behaves_like "translatable",
+                  "widget_card",
+                  "edit_admin_widget_card_path",
+                  %w[title description link_text label]
+
   background do
     admin = create(:administrator).user
     login_as(admin)
@@ -134,116 +139,5 @@ feature 'Cards' do
       Rails.root.join('spec/fixtures/files/clippy.jpg'),
       make_visible: true)
     expect(page).to have_field('widget_card_image_attributes_title', with: "clippy.jpg")
-  end
-
-  context "Translations" do
-
-    let(:card) { create(:widget_card, title_en: "Title in English",
-                                      title_es: "Título en Español",
-                                      description_en: "Description in English",
-                                      description_es: "Descripción en Español") }
-
-    before do
-      @edit_card_url = edit_admin_widget_card_path(card)
-    end
-
-    scenario "Add a translation", :js do
-      visit @edit_card_url
-
-      select "Français", from: "translation_locale"
-      fill_in 'widget_card_title_fr', with: 'Titre en Français'
-      fill_in 'widget_card_description_fr', with: 'Description en Français'
-
-      click_button 'Save card'
-
-      visit @edit_card_url
-      expect(page).to have_field('widget_card_description_en', with: 'Description in English')
-
-      click_link "Español"
-      expect(page).to have_field('widget_card_description_es', with: 'Descripción en Español')
-
-      click_link "Français"
-      expect(page).to have_field('widget_card_description_fr', with: 'Description en Français')
-    end
-
-    scenario "Update a translation", :js do
-      visit @edit_card_url
-
-      click_link "Español"
-      fill_in 'widget_card_description_es', with: 'Descripción correcta en Español'
-
-      click_button 'Save card'
-
-      visit root_path
-
-      within("#widget_card_#{card.id}") do
-        expect(page).to have_content("Description in English")
-      end
-
-      select('Español', from: 'locale-switcher')
-
-      within("#widget_card_#{card.id}") do
-        expect(page).to have_content('Descripción correcta en Español')
-      end
-    end
-
-    scenario "Remove a translation", :js do
-
-      visit @edit_card_url
-
-      click_link "Español"
-      click_link "Remove language"
-
-      expect(page).not_to have_link "Español"
-
-      click_button "Save card"
-      visit @edit_card_url
-      expect(page).not_to have_link "Español"
-    end
-
-    context "Globalize javascript interface" do
-
-      scenario "Highlight current locale", :js do
-        visit @edit_card_url
-
-        expect(find("a.js-globalize-locale-link.is-active")).to have_content "English"
-
-        select('Español', from: 'locale-switcher')
-
-        expect(find("a.js-globalize-locale-link.is-active")).to have_content "Español"
-      end
-
-      scenario "Highlight selected locale", :js do
-        visit @edit_card_url
-
-        expect(find("a.js-globalize-locale-link.is-active")).to have_content "English"
-
-        click_link "Español"
-
-        expect(find("a.js-globalize-locale-link.is-active")).to have_content "Español"
-      end
-
-      scenario "Show selected locale form", :js do
-        visit @edit_card_url
-
-        expect(page).to have_field('widget_card_description_en', with: 'Description in English')
-
-        click_link "Español"
-
-        expect(page).to have_field('widget_card_description_es', with: 'Descripción en Español')
-      end
-
-      scenario "Select a locale and add it to the card form", :js do
-        visit @edit_card_url
-
-        select "Français", from: "translation_locale"
-
-        expect(page).to have_link "Français"
-
-        click_link "Français"
-
-        expect(page).to have_field('widget_card_description_fr')
-      end
-    end
   end
 end

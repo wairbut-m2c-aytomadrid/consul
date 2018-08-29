@@ -16,7 +16,7 @@ shared_examples "translatable" do |factory_name, path_name, fields|
     end.to_h
   end
 
-  let(:translatable) { create(factory_name, attributes) }
+  let(:translatable) { p attributes; create(factory_name, attributes) }
   let(:path) { send(path_name, *resource_hierarchy_for(translatable)) }
   before { login_as(create(:administrator).user) }
 
@@ -53,8 +53,10 @@ shared_examples "translatable" do |factory_name, path_name, fields|
     scenario "Update a translation", :js do
       visit path
 
-      click_link "Español"
       field = fields.sample
+      expect(page).to have_content(text_for(field, :en))
+
+      click_link "Español"
 
       fill_in field_for(field, :es), with: "Corrección de #{text_for(field, :es)}"
 
@@ -92,8 +94,16 @@ shared_examples "translatable" do |factory_name, path_name, fields|
 
       field = possible_blanks.sample
 
+      p Widget::Card.count
+      p Widget::Card.last
+
       visit path
+      save_page
+      # This fails 
       expect(page).to have_content text_for(field, :en)
+
+      # This passes
+      #expect(page).to have_field(field_for(field, :en), with: text_for(field, :en))
 
       fill_in field_for(field, :en), with: ''
       click_button update_button_text
@@ -185,6 +195,8 @@ def update_button_text
   case translatable_class.name
   when "Budget::Investment::Milestone"
     "Update milestone"
+  when "Widget::Card"
+    "Save card"
   else
     "Save changes"
   end
