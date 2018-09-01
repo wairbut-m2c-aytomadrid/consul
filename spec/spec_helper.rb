@@ -44,7 +44,19 @@ RSpec.configure do |config|
       MSG
     end
     #DatabaseCleaner.clean_with(:deletion)
-    DatabaseCleaner.clean_with(:truncation)
+    puts "Truncating all tables throught DBCleaner"
+    puts(Benchmark.measure {
+      DatabaseCleaner.clean_with(:truncation)
+    })
+
+    puts "Truncating all tables manually"
+    puts(Benchmark.measure {
+      ActiveRecord::Base.connection.execute('TRUNCATE TABLE "public"."ahoy_events", "public"."budget_ballot_lines", "public"."legislation_annotations", "public"."answers", "public"."poll_ballot_sheets", "public"."local_census_records", "public"."budget_investment_milestone_translations", "public"."locks", "public"."poll_final_recounts", "public"."admin_notifications", "public"."banner_sections", "public"."banner_translations", "public"."taggings", "public"."poll_voters", "public"."newsletters", "public"."valuators", "public"."i18n_content_translations", "public"."proposal_notifications", "public"."related_contents", "public"."poll_partial_results", "public"."budget_investment_statuses", "public"."poll_officers", "public"."forums", "public"."poll_answers", "public"."map_locations", "public"."valuation_assignments", "public"."site_customization_pages", "public"."poll_question_answer_videos", "public"."probe_options", "public"."poll_officer_assignments", "public"."probe_selections", "public"."site_customization_images", "public"."settings", "public"."legislation_proposals", "public"."probes", "public"."legislation_draft_versions", "public"."budget_groups", "public"."budget_headings", "public"."budget_investment_milestones", "public"."budgets", "public"."direct_messages", "public"."flags", "public"."topics", "public"."verified_users", "public"."poll_letter_officer_logs", "public"."spending_proposals", "public"."budget_ballots", "public"."budget_polls", "public"."votes", "public"."follows", "public"."poll_recounts", "public"."budget_phases", "public"."polls", "public"."valuator_groups", "public"."comments", "public"."moderators", "public"."budget_reclassified_votes", "public"."budget_valuator_group_assignments", "public"."debates", "public"."ballots", "public"."images", "public"."redeemable_codes", "public"."web_sections", "public"."budget_valuator_assignments", "public"."organizations", "public"."poll_booths", "public"."visits", "public"."notifications", "public"."geozones", "public"."widget_cards", "public"."widget_feeds", "public"."i18n_contents", "public"."managers", "public"."poll_ballots", "public"."poll_booth_assignments", "public"."poll_question_answers", "public"."tags", "public"."annotations", "public"."activities", "public"."delayed_jobs", "public"."poll_nvotes", "public"."campaigns", "public"."failed_census_calls", "public"."geozones_polls", "public"."budget_recommendations", "public"."documents", "public"."related_content_scores", "public"."communities", "public"."signature_sheets", "public"."signatures", "public"."site_customization_content_blocks", "public"."ballot_lines", "public"."banners", "public"."volunteer_polls", "public"."administrators", "public"."legacy_legislations", "public"."poll_questions", "public"."legislation_answers", "public"."stats", "public"."identities", "public"."legislation_questions", "public"."legislation_question_options", "public"."poll_shifts", "public"."users", "public"."legislation_processes", "public"."budget_investments", "public"."proposals";')
+    })
+
+    require 'pp'
+    puts 'PG config'
+    pp ActiveRecord::Base.connection.execute('SHOW ALL').values
   end
 
   config.before do |example|
