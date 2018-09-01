@@ -20,11 +20,17 @@ RSpec.configure do |config|
   config.include(CommonActions)
   config.include(ActiveSupport::Testing::TimeHelpers)
 
-  config.before(:suite) do
-    DatabaseCleaner.clean_with :truncation
+  def instrument(name, example)
+    ActiveSupport::Notifications.instrument name, example: example do
+      yield
+    end
   end
 
   config.before(:suite) do
+    #require 'pry'
+    require 'pp'
+    $total_time_loading_seeds = Hash.new(0)
+    $total_time_cleaning_after = Hash.new(0)
     if config.use_transactional_fixtures?
       raise(<<-MSG)
         Delete line `config.use_transactional_fixtures = true` from rails_helper.rb
@@ -37,6 +43,7 @@ RSpec.configure do |config|
         uncommitted transaction data setup over the spec's database connection.
       MSG
     end
+    #DatabaseCleaner.clean_with(:deletion)
     DatabaseCleaner.clean_with(:truncation)
   end
 
@@ -44,8 +51,26 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
     I18n.locale = :en
     Globalize.locale = I18n.locale
-    load Rails.root.join('db', 'seeds.rb').to_s
+    instrument "test.seed_db", example do
+      start = Time.now
+      load Rails.root.join('db', 'seeds.rb').to_s
+      $total_time_loading_seeds[example.metadata[:type]] += Time.now - start
+    end
     Setting["feature.user.skip_verification"] = nil
+  end
+
+  $times = Hash.new(0)
+
+  ActiveSupport::Notifications.subscribe /^test./ do |name, started, finished, unique_id, data|
+    $times[name] += finished - started 
+  end
+
+
+  config.after(:suite) do
+    puts "Total time loading seeds"
+    pp $total_time_loading_seeds
+    puts "$times"
+    pp $times
   end
 
   config.before(:each, type: :feature) do
@@ -57,6 +82,8 @@ RSpec.configure do |config|
       # Driver is probably for an external browser with an app
       # under test that does *not* share a database connection with the
       # specs, so use truncation strategy.
+      # TODO use pre_count
+      #DatabaseCleaner.strategy = :deletion
       DatabaseCleaner.strategy = :truncation
     end
   end
@@ -82,8 +109,20 @@ RSpec.configure do |config|
     DatabaseCleaner.start
   end
 
-  config.append_after do
-    DatabaseCleaner.clean
+  config.append_after do |example|
+    #Rails.logger.info ''
+    #Rails.logger.info '###########'
+    #Rails.logger.info 'CLEANINGGGGG'
+    #Rails.logger.info '###########'
+    #Rails.logger.info ''
+    instrument "test.cleaning", example do 
+      DatabaseCleaner.clean
+      #if DatabaseCleaner.strategy != :transaction
+        #start = Time.now
+        #DatabaseCleaner.clean
+        #$total_time_cleaning_after[DatabaseCleaner.strategy] += Time.now - start
+      #end
+    end
   end
 
   config.before(:each, type: :feature) do
