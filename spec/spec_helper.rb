@@ -95,14 +95,15 @@ RSpec.configure do |config|
       # under test that does *not* share a database connection with the
       # specs, so use truncation strategy.
       # TODO use pre_count
-      #DatabaseCleaner.strategy = :deletion
-      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.strategy = :deletion
+      #DatabaseCleaner.strategy = :truncation, {pre_count: true}
     end
   end
 
   config.before(:each, :headless_chrome) do
     Capybara.current_driver  = :headless_chrome
-    DatabaseCleaner.strategy = :truncation
+    #DatabaseCleaner.strategy = :truncation, {pre_count: true}
+    DatabaseCleaner.strategy = :deletion
   end
 
   config.after(:each, :headless_chrome) do
