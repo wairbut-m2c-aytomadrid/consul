@@ -7,9 +7,7 @@ if Administrator.count == 0 && !Rails.env.test?
   admin.create_administrator
 end
 
-Setting.defaults.each do |name, value|
-  Setting[name] = value
-end
+Setting.reset_defaults
 
 # Default custom pages
 load Rails.root.join("db", "pages.rb")

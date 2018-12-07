@@ -127,5 +127,9 @@ class Setting < ApplicationRecord
         "youtube_handle": "channel/UCFmaChI9quIY7lwHplnacfg"
       }
     end
+
+    def reset_defaults
+      defaults.each { |name, value| self[name] = value }
+    end
   end
 end
