@@ -53,4 +53,9 @@ namespace :settings do
     Setting["feature.captcha"] = nil
     Setting["captcha.max_failed_login_attempts"] = 5
   end
+
+  desc "Add new settings"
+  task add_new_settings: :environment do
+    Setting.add_new_settings
+  end
 end
