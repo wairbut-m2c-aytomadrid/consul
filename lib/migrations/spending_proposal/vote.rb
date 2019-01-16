@@ -41,4 +41,25 @@ class Migrations::SpendingProposal::Vote
     end
   end
 
+  def create_budget_investment_votes
+    spending_proposal_votes.each do |vote|
+      create_budget_invesment_vote(vote)
+    end
+  end
+
+  private
+
+    def spending_proposal_votes
+      Vote.where(votable: SpendingProposal.all)
+    end
+
+    def create_budget_invesment_vote(vote)
+      budget_investment = find_budget_investment(vote.votable)
+      budget_investment.vote_by(voter: vote.voter, vote: "yes")
+    end
+
+    def find_budget_investment(spending_proposal)
+      Budget::Investment.where(original_spending_proposal_id: spending_proposal.id).first
+    end
+
 end

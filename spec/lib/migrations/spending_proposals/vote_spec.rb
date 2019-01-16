@@ -152,4 +152,39 @@ describe Migrations::SpendingProposal::Vote do
     end
 
   end
+
+  describe "#create_budget_investment_votes" do
+
+    it "creates a budget investment's vote for a corresponding spending proposal's vote" do
+      spending_proposal = create(:spending_proposal)
+      budget_investment = create(:budget_investment, original_spending_proposal_id: spending_proposal.id)
+
+      spending_proposal_vote = create(:vote, votable: spending_proposal)
+
+      Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
+
+      budget_investment_vote = budget_investment.votes_for.first
+
+      expect(budget_investment.votes_for.count).to eq(1)
+      expect(budget_investment_vote.voter).to eq(spending_proposal_vote.voter)
+      expect(budget_investment_vote.votable).to eq(budget_investment)
+      expect(budget_investment_vote.vote_flag).to eq(true)
+    end
+
+    it "creates budget investment's votes for all correspoding spending proposal's votes" do
+      spending_proposal1 = create(:spending_proposal)
+      spending_proposal2 = create(:spending_proposal)
+      budget_investment1 = create(:budget_investment, original_spending_proposal_id: spending_proposal1.id)
+      budget_investment2 = create(:budget_investment, original_spending_proposal_id: spending_proposal2.id)
+
+      3.times { create(:vote, votable: spending_proposal1) }
+      5.times { create(:vote, votable: spending_proposal2) }
+
+      Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
+
+      expect(budget_investment1.votes_for.count).to eq(3)
+      expect(budget_investment2.votes_for.count).to eq(5)
+    end
+
+  end
 end
