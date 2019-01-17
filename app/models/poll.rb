@@ -45,7 +45,7 @@ class Poll < ActiveRecord::Base
   scope :with_nvotes, -> { where.not(nvotes_poll_id: nil) }
   scope :not_budget,    -> { where(budget_id: nil) }
 
-  scope :sort_for_list, -> { order(:geozone_restricted, :starts_at, :name) }
+  scope :sort_for_list, -> { joins(:translations).order(:geozone_restricted, :starts_at, "poll_translations.name") }
 
   def title
     name
