@@ -3,6 +3,10 @@ require 'rails_helper'
 
 feature 'Proposals' do
 
+  it_behaves_like "milestoneable",
+                  :proposal,
+                  "proposal_path"
+
   scenario 'Disabled with a feature flag' do
     Setting['feature.proposals'] = nil
     expect{ visit proposals_path }.to raise_exception(FeatureFlags::FeatureDisabled)
@@ -18,6 +22,8 @@ feature 'Proposals' do
 
     before do
       Setting['feature.allow_images'] = true
+      Setting['feature.featured_proposals'] = true
+      Setting['featured_proposals_number'] = 3
     end
 
     after do
@@ -30,7 +36,7 @@ feature 'Proposals' do
 
       visit proposals_path
 
-      expect(page).to have_selector('#proposals .proposal-featured', count: 2)
+      expect(page).to have_selector('#proposals .proposal-featured', count: 3)
       featured_proposals.each do |featured_proposal|
         within('#featured-proposals') do
           expect(page).to have_content featured_proposal.title
@@ -61,7 +67,7 @@ feature 'Proposals' do
       proposals.each do |proposal|
         within('#proposals') do
           expect(page).to     have_link proposal.title
-          expect(page).to_not have_content proposal.summary
+          expect(page).not_to have_content proposal.summary
         end
       end
 
@@ -92,7 +98,8 @@ feature 'Proposals' do
         click_link "Next", exact: false
       end
 
-      expect(page).to have_selector('#proposals .proposal', count: 3)
+      expect(page).to have_selector('#proposals .proposal-featured', count: 3)
+      expect(page).to have_selector('#proposals .proposal', count: 2)
     end
 
     scenario 'Index should show proposal descriptive image only when is defined' do
@@ -1835,8 +1842,11 @@ feature 'Successful proposals' do
     end
   end
 
-  scenario 'Successful proposals show create question button to admin users' do
+  scenario 'Successful proposals do not show create question button in index' do
     successful_proposals = create_successful_proposals
+    admin = create(:administrator)
+
+    login_as(admin.user)
 
     visit proposals_path
 
@@ -1845,17 +1855,20 @@ feature 'Successful proposals' do
         expect(page).not_to have_link "Create question"
       end
     end
+  end
 
-    login_as(create(:administrator).user)
+  scenario 'Successful proposals do not show create question button in show' do
+    successful_proposals = create_successful_proposals
+    admin = create(:administrator)
 
-    visit proposals_path
+    login_as(admin.user)
 
     successful_proposals.each do |proposal|
+      visit proposal_path(proposal)
       within("#proposal_#{proposal.id}_votes") do
-        expect(page).to have_link "Create question"
+        expect(page).not_to have_link "Create question"
       end
     end
-
   end
 
   context "Skip user verification" do

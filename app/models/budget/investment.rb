@@ -24,6 +24,7 @@ class Budget
     include Notifiable
     include Filterable
     include Flaggable
+    include Milestoneable
 
     belongs_to :author, -> { with_hidden }, class_name: 'User', foreign_key: 'author_id'
     belongs_to :heading
@@ -39,8 +40,6 @@ class Budget
 
     has_many :comments, -> {where(valuation: false)}, as: :commentable, class_name: 'Comment'
     has_many :valuations, -> {where(valuation: true)}, as: :commentable, class_name: 'Comment'
-
-    has_many :milestones
 
     validates :title, presence: true
     validates :author, presence: true
@@ -64,7 +63,8 @@ class Budget
 
     scope :valuation_open,              -> { where(valuation_finished: false) }
     scope :without_admin,               -> { valuation_open.where(administrator_id: nil) }
-    scope :without_valuator,            -> { valuation_open.where(valuator_assignments_count: 0) }
+    scope :without_valuator_group,      -> { where(valuator_group_assignments_count: 0) }
+    scope :without_valuator,            -> { valuation_open.without_valuator_group.where(valuator_assignments_count: 0) }
     scope :under_valuation,             -> { valuation_open.valuating.where("administrator_id IS NOT ?", nil) }
     scope :managed,                     -> { valuation_open.where(valuator_assignments_count: 0).where("administrator_id IS NOT ?", nil) }
     scope :valuating,                   -> { valuation_open.where("valuator_assignments_count > 0 OR valuator_group_assignments_count > 0" ) }
@@ -84,7 +84,6 @@ class Budget
     scope :last_week,                   -> { where("created_at >= ?", 7.days.ago)}
     scope :sort_by_flags,               -> { order(flags_count: :desc, updated_at: :desc) }
     scope :sort_by_created_at,          -> { reorder(created_at: :desc) }
-    scope :with_milestones,             -> { joins(:milestones).distinct }
 
     scope :by_budget,         ->(budget)      { where(budget: budget) }
     scope :by_group,          ->(group_id)    { where(group_id: group_id) }
@@ -102,7 +101,7 @@ class Budget
     scope :for_render, -> { includes(:heading) }
 
     before_save :calculate_confidence_score
-    after_save :recalculate_heading_winners if :incompatible_changed?
+    after_save :recalculate_heading_winners
     before_validation :set_responsible_name
     before_validation :set_denormalized_ids
 
@@ -366,6 +365,16 @@ class Budget
 
     def assigned_valuation_groups
       self.valuator_groups.collect(&:name).compact.join(', ').presence
+    end
+
+    def self.with_milestone_status_id(status_id)
+      joins(:milestones).includes(:milestones).select do |investment|
+        investment.milestone_status_id == status_id.to_i
+      end
+    end
+
+    def milestone_status_id
+      milestones.published.with_status.order_by_publication_date.last&.status_id
     end
 
     private

@@ -37,21 +37,35 @@ section "Creating Budgets" do
     phase: 'accepting'
   )
 
-  (1..([1, 2, 3].sample)).each do |i|
-    finished_group  = finished_budget.groups.create!(name: "#{Faker::StarWars.planet} #{i}")
-    accepting_group = accepting_budget.groups.create!(name: "#{Faker::StarWars.planet} #{i}")
+  Budget.all.each do |budget|
+    city_group = budget.groups.create!(name: I18n.t('seeds.budgets.groups.all_city'))
+    city_group.headings.create!(name: I18n.t('seeds.budgets.groups.all_city'),
+                                price: 1000000,
+                                population: 1000000,
+                                latitude: '40.416775',
+                                longitude: '-3.703790')
 
-    geozones = Geozone.reorder("RANDOM()").limit([2, 5, 6, 7].sample)
-    geozones.each do |geozone|
-      finished_group.headings << finished_group.headings.create!(name: "#{geozone.name} #{i}",
-                                                                 price: rand(1..100) * 100000,
-                                                                 population: rand(1..50) * 10000)
-
-      accepting_group.headings << accepting_group.headings.create!(name: "#{geozone.name} #{i}",
-                                                                   price: rand(1..100) * 100000,
-                                                                   population: rand(1..50) * 10000)
-
-    end
+    districts_group = budget.groups.create!(name: I18n.t('seeds.budgets.groups.districts'))
+    districts_group.headings.create!(name: I18n.t('seeds.geozones.north_district'),
+                                     price: rand(5..10) * 100000,
+                                     population: 350000,
+                                     latitude: '40.416775',
+                                     longitude: '-3.703790')
+    districts_group.headings.create!(name: I18n.t('seeds.geozones.west_district'),
+                                     price: rand(5..10) * 100000,
+                                     population: 300000,
+                                     latitude: '40.416775',
+                                     longitude: '-3.703790')
+    districts_group.headings.create!(name: I18n.t('seeds.geozones.east_district'),
+                                     price: rand(5..10) * 100000,
+                                     population: 200000,
+                                     latitude: '40.416775',
+                                     longitude: '-3.703790')
+    districts_group.headings.create!(name: I18n.t('seeds.geozones.central_district'),
+                                     price: rand(5..10) * 100000,
+                                     population: 150000,
+                                     latitude: '40.416775',
+                                     longitude: '-3.703790')
   end
 end
 
@@ -94,7 +108,7 @@ section "Marking investments as visible to valuators" do
 end
 
 section "Geolocating Investments" do
-  Budget.all.each do |budget|
+  Budget.find_each do |budget|
     budget.investments.each do |investment|
       MapLocation.create(latitude: Setting['map_latitude'].to_f + rand(-10..10)/100.to_f,
                          longitude: Setting['map_longitude'].to_f + rand(-10..10)/100.to_f,
@@ -180,26 +194,5 @@ end
 section "Marking investments as visible to valuators" do
   (1..50).to_a.sample.times do
     Budget::Investment.reorder("RANDOM()").first.update(visible_to_valuators: true)
-  end
-end
-
-section "Creating default Investment Milestone Statuses" do
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.studying_project'))
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.bidding'))
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.executing_project'))
-  Budget::Investment::Status.create(name: I18n.t('seeds.budgets.statuses.executed'))
-end
-
-section "Creating investment milestones" do
-  Budget::Investment.all.each do |investment|
-    milestone = Budget::Investment::Milestone.new(investment_id: investment.id, publication_date: Date.tomorrow, status_id: Budget::Investment::Status.all.sample)
-    I18n.available_locales.map do |locale|
-      neutral_locale = locale.to_s.downcase.underscore.to_sym
-      Globalize.with_locale(neutral_locale) do
-        milestone.description = "Description for locale #{locale}"
-        milestone.title = I18n.l(Time.current, format: :datetime)
-        milestone.save!
-      end
-    end
   end
 end

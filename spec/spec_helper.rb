@@ -61,21 +61,8 @@ RSpec.configure do |config|
     end
   end
 
-  config.before(:each, :headless_chrome) do
-    Capybara.current_driver  = :headless_chrome
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  config.after(:each, :headless_chrome) do
-    Capybara.current_driver = Capybara.default_driver
-  end
-
-  config.after(:each, :nvotes) do
+  config.after(:each, :page_driver) do
     page.driver.reset!
-  end
-
-  config.before(:each, type: :feature) do
-    Capybara.reset_sessions!
   end
 
   config.before do
@@ -94,6 +81,25 @@ RSpec.configure do |config|
   config.after(:each, type: :feature) do
     Bullet.perform_out_of_channel_notifications if Bullet.notification?
     Bullet.end_request
+  end
+
+  config.before(:each, :with_frozen_time) do
+    travel_to Time.now # TODO: use `freeze_time` after migrating to Rails 5.
+  end
+
+  config.after(:each, :with_frozen_time) do
+    travel_back
+  end
+
+  config.before(:each, :with_different_time_zone) do
+    system_zone = ActiveSupport::TimeZone.new("UTC")
+    local_zone = ActiveSupport::TimeZone.new("Madrid")
+
+    # Make sure the date defined by `config.time_zone` and
+    # the local date are different.
+    allow(Time).to receive(:zone).and_return(system_zone)
+    allow(Time).to receive(:now).and_return(Date.current.at_end_of_day.in_time_zone(local_zone))
+    allow(Date).to receive(:today).and_return(Time.now.to_date)
   end
 
   # Allows RSpec to persist some state between runs in order to support

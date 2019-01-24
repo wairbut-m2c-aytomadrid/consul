@@ -12,7 +12,7 @@ feature 'Executions' do
   let!(:investment3) { create(:budget_investment, :incompatible, heading: heading) }
 
   scenario 'only displays investments with milestones' do
-    create(:budget_investment_milestone, investment: investment1)
+    create(:milestone, milestoneable: investment1)
 
     visit budget_path(budget)
     click_link 'See results'
@@ -28,7 +28,7 @@ feature 'Executions' do
   end
 
   scenario "Do not display headings with no winning investments for selected status" do
-    create(:budget_investment_milestone, investment: investment1)
+    create(:milestone, milestoneable: investment1)
 
     empty_group   = create(:budget_group, budget: budget)
     empty_heading = create(:budget_heading, group: empty_group, price: 1000)
@@ -46,7 +46,7 @@ feature 'Executions' do
   end
 
   scenario "Show message when there are no winning investments with the selected status", :js do
-    create(:budget_investment_status, name: I18n.t('seeds.budgets.statuses.executed'))
+    create(:milestone_status, name: I18n.t('seeds.budgets.statuses.executed'))
 
     visit budget_path(budget)
 
@@ -61,8 +61,9 @@ feature 'Executions' do
   end
 
   context 'Images' do
+
     scenario 'renders milestone image if available' do
-      milestone1 = create(:budget_investment_milestone, investment: investment1)
+      milestone1 = create(:milestone, milestoneable: investment1)
       create(:image, imageable: milestone1)
 
       visit budget_path(budget)
@@ -75,7 +76,7 @@ feature 'Executions' do
     end
 
     scenario 'renders investment image if no milestone image is available' do
-      create(:budget_investment_milestone, investment: investment2)
+      create(:milestone, milestoneable: investment2)
       create(:image, imageable: investment2)
 
       visit budget_path(budget)
@@ -88,7 +89,7 @@ feature 'Executions' do
     end
 
     scenario 'renders default image if no milestone nor investment images are available' do
-      create(:budget_investment_milestone, investment: investment4)
+      create(:milestone, milestoneable: investment4)
 
       visit budget_path(budget)
 
@@ -100,14 +101,20 @@ feature 'Executions' do
     end
 
     scenario "renders last milestone's image if investment has multiple milestones with images associated" do
-      milestone1 = create(:budget_investment_milestone, investment: investment1,
-                                                        publication_date: 2.weeks.ago)
+      milestone1 = create(:milestone, milestoneable: investment1,
+                                      publication_date: Date.yesterday)
 
-      milestone2 = create(:budget_investment_milestone, investment: investment1,
-                                                        publication_date: Date.yesterday)
+      milestone2 = create(:milestone, milestoneable: investment1,
+                                      publication_date: Date.yesterday)
 
-      create(:image, imageable: milestone1, title: 'First milestone image')
-      create(:image, imageable: milestone2, title: 'Second milestone image')
+      milestone3 = create(:milestone, milestoneable: investment1,
+                                      publication_date: Date.yesterday)
+
+      milestone4 = create(:milestone, milestoneable: investment1,
+                                      publication_date: Date.yesterday)
+
+      create(:image, imageable: milestone2, title: 'Image for first milestone with image')
+      create(:image, imageable: milestone3, title: 'Image for second milestone with image')
 
       visit budget_path(budget)
 
@@ -115,24 +122,24 @@ feature 'Executions' do
       click_link 'Milestones'
 
       expect(page).to have_content(investment1.title)
-      expect(page).to have_css("img[alt='#{milestone2.image.title}']")
-      expect(page).not_to have_css("img[alt='#{milestone1.image.title}']")
+      expect(page).to have_css("img[alt='#{milestone3.image.title}']")
     end
+
   end
 
   context 'Filters' do
 
-    let!(:status1) { create(:budget_investment_status, name: I18n.t('seeds.budgets.statuses.studying_project')) }
-    let!(:status2) { create(:budget_investment_status, name: I18n.t('seeds.budgets.statuses.bidding')) }
+    let!(:status1) { create(:milestone_status, name: "Studying the project") }
+    let!(:status2) { create(:milestone_status, name: "Bidding") }
 
     scenario 'Filters select with counter are shown' do
-      create(:budget_investment_milestone, investment: investment1,
-                                           publication_date: Date.yesterday,
-                                           status: status1)
+      create(:milestone, milestoneable: investment1,
+                         publication_date: Date.yesterday,
+                         status: status1)
 
-      create(:budget_investment_milestone, investment: investment2,
-                                           publication_date: Date.yesterday,
-                                           status: status2)
+      create(:milestone, milestoneable: investment2,
+                         publication_date: Date.yesterday,
+                         status: status2)
 
       visit budget_path(budget)
 
@@ -145,9 +152,9 @@ feature 'Executions' do
     end
 
     scenario 'by milestone status', :js do
-      create(:budget_investment_milestone, investment: investment1, status: status1)
-      create(:budget_investment_milestone, investment: investment2, status: status2)
-      create(:budget_investment_status, name: I18n.t('seeds.budgets.statuses.executing_project'))
+      create(:milestone, milestoneable: investment1, status: status1)
+      create(:milestone, milestoneable: investment2, status: status2)
+      create(:milestone_status, name: I18n.t('seeds.budgets.statuses.executing_project'))
 
       visit budget_path(budget)
 
@@ -174,13 +181,13 @@ feature 'Executions' do
     end
 
     scenario 'are based on latest milestone status', :js do
-      create(:budget_investment_milestone, investment: investment1,
-                                           publication_date: 1.month.ago,
-                                           status: status1)
+      create(:milestone, milestoneable: investment1,
+                         publication_date: 1.month.ago,
+                         status: status1)
 
-      create(:budget_investment_milestone, investment: investment1,
-                                           publication_date: Date.yesterday,
-                                           status: status2)
+      create(:milestone, milestoneable: investment1,
+                         publication_date: Date.yesterday,
+                         status: status2)
 
       visit budget_path(budget)
       click_link 'See results'
@@ -194,13 +201,13 @@ feature 'Executions' do
     end
 
     scenario 'milestones with future dates are not shown', :js do
-      create(:budget_investment_milestone, investment: investment1,
-                                           publication_date: Date.yesterday,
-                                           status: status1)
+      create(:milestone, milestoneable: investment1,
+                         publication_date: Date.yesterday,
+                         status: status1)
 
-      create(:budget_investment_milestone, investment: investment1,
-                                           publication_date: Date.tomorrow,
-                                           status: status2)
+      create(:milestone, milestoneable: investment1,
+                         publication_date: Date.tomorrow,
+                         status: status2)
 
       visit budget_path(budget)
       click_link 'See results'
@@ -218,7 +225,7 @@ feature 'Executions' do
     let!(:budget) { create(:budget, :finished, slug: '2016') }
 
     scenario 'can navigate from spending proposal Results page to Executions page' do
-      create(:budget_investment_milestone, investment: investment1)
+      create(:milestone, milestoneable: investment1)
 
       visit participatory_budget_results_path
 
@@ -232,7 +239,7 @@ feature 'Executions' do
     end
 
     scenario 'renders spending proposal navigation when accessing 2016 budget' do
-      create(:budget_investment_milestone, investment: investment1)
+      create(:milestone, milestoneable: investment1)
 
       visit participatory_budget_executions_path
 
@@ -246,18 +253,18 @@ feature 'Executions' do
 
   context 'Heading Order' do
 
-    def create_heading_with_investment_with_milestone(group:, name:)
-      heading    = create(:budget_heading, group: group, name: name)
+    def create_heading_with_investment_with_milestone(*opts, **kwargs)
+      heading    = create(:budget_heading, *opts, kwargs)
       investment = create(:budget_investment, :winner, heading: heading)
-      milestone  = create(:budget_investment_milestone, investment: investment)
+      milestone  = create(:milestone, milestoneable: investment)
       heading
     end
 
     scenario 'City heading is displayed first' do
       heading.destroy!
-      other_heading1 = create_heading_with_investment_with_milestone(group: group, name: 'Other 1')
-      city_heading   = create_heading_with_investment_with_milestone(group: group, name: 'Toda la ciudad')
-      other_heading2 = create_heading_with_investment_with_milestone(group: group, name: 'Other 2')
+      other_heading1 = create_heading_with_investment_with_milestone(group: group)
+      city_heading   = create_heading_with_investment_with_milestone(:city_heading, group: group)
+      other_heading2 = create_heading_with_investment_with_milestone(group: group)
 
       visit custom_budget_executions_path(budget)
 
@@ -278,5 +285,19 @@ feature 'Executions' do
       expect(a_heading.name).to appear_before(m_heading.name)
       expect(m_heading.name).to appear_before(z_heading.name)
     end
+  end
+
+  context 'No milestones' do
+
+    scenario 'Milestone not yet published' do
+      status = create(:milestone_status)
+      unpublished_milestone = create(:milestone, milestoneable: investment1,
+                                     status: status, publication_date: Date.tomorrow)
+
+      visit custom_budget_executions_path(budget, status: status.id)
+
+      expect(page).to have_content('No winner investments in this state')
+    end
+
   end
 end

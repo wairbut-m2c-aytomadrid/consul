@@ -8,6 +8,11 @@ class Poll < ActiveRecord::Base
   include Notifiable
   include Sluggable
 
+  translates :name,        touch: true
+  translates :summary,     touch: true
+  translates :description, touch: true
+  include Globalizable
+
   RECOUNT_DURATION = 1.week
 
   has_many :booth_assignments, class_name: "Poll::BoothAssignment"
@@ -27,8 +32,7 @@ class Poll < ActiveRecord::Base
 
   accepts_nested_attributes_for :questions
 
-  validates :name, presence: true
-
+  validates_translation :name, presence: true
   validate :date_range
 
   scope :current,  -> { where('starts_at <= ? and ? <= ends_at', Date.current.beginning_of_day, Date.current.beginning_of_day) }

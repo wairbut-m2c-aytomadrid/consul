@@ -59,7 +59,7 @@ feature 'Debates' do
     debates.each do |debate|
       within('#debates') do
         expect(page).to     have_link debate.title
-        expect(page).to_not have_content debate.description
+        expect(page).not_to have_content debate.description
       end
     end
 
@@ -505,7 +505,7 @@ feature 'Debates' do
 
         click_link 'recommendations'
 
-        expect(page).to have_content 'There are not debates related to your interests'
+        expect(page).to have_content 'There are no debates related to your interests'
       end
 
       scenario 'should display text when user has no related interests' do

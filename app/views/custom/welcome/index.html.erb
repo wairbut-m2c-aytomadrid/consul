@@ -26,8 +26,8 @@
                 social_url: root_url,
                 social_title: t("landings.signup.title"),
                 social_description: t("landings.signup.description"),
-                twitter_image_url: "social_media_cambia_tu_ciudad_twitter.jpg",
-                og_image_url: "social_media_cambia_tu_ciudad.jpg" %>
+                twitter_image_url: "social_media_twitter.jpg",
+                og_image_url: "social_media.jpg" %>
   <% end %>
 <% end %>
 
@@ -40,9 +40,11 @@
   <%= render "feeds" %>
 
   <div class="row">
-    <div class="small-12 column <%= 'large-8' if feed_processes_enabled? %>">
-      <%= render "cards" %>
-    </div>
+    <% if @cards.any? %>
+      <div class="small-12 column <%= 'large-8' if feed_processes_enabled? %>">
+        <%= render "cards" %>
+      </div>
+    <% end %>
 
     <div class="small-12 large-4 column">
       <%= render "processes" %>

@@ -72,6 +72,7 @@ Setting["meta_keywords"] = nil
 # Feature flags
 Setting['feature.debates'] = true
 Setting['feature.proposals'] = true
+Setting['feature.featured_proposals'] = true
 Setting['feature.spending_proposals'] = nil
 Setting['feature.polls'] = true
 Setting['feature.twitter_login'] = true
@@ -89,6 +90,7 @@ Setting['feature.map'] = nil
 Setting['feature.allow_images'] = true
 Setting['feature.allow_attached_documents'] = true
 Setting['feature.guides'] = nil
+Setting['feature.help_page'] = true
 
 # Spending proposals feature flags
 Setting['feature.spending_proposal_features.phase1'] = true
@@ -122,6 +124,9 @@ Setting['verification_offices_url'] = 'http://www.madrid.es/portales/munimadrid/
 Setting['min_age_to_participate'] = 16
 Setting['min_age_to_verify'] = 16
 
+# Featured proposals
+Setting['featured_proposals_number'] = 3
+
 # Proposal improvement url path ('/help/proposal-improvement')
 Setting['proposal_improvement_path'] = nil
 
@@ -139,3 +144,5 @@ Setting['feature.homepage.widgets.feeds.proposals'] = true
 Setting['feature.homepage.widgets.feeds.debates'] = true
 Setting['feature.homepage.widgets.feeds.processes'] = true
 
+# Votes hot_score configuration
+Setting.create(key: 'hot_score_period_in_days', value: 31)
