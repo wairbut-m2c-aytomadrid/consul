@@ -73,6 +73,36 @@ describe Migrations::SpendingProposal::Vote do
       expect(spending_proposal.votes_for.count).to eq(3)
     end
 
+    it "verifies if represented user already voted" do
+      forum = create(:forum)
+      represented_user = create(:represented_user, representative: forum)
+      spending_proposal = create(:spending_proposal)
+
+      create(:vote, votable: spending_proposal, voter: forum.user)
+      create(:vote, votable: spending_proposal, voter: represented_user)
+
+      expect(spending_proposal.votes_for.count).to eq(2)
+
+      Migrations::SpendingProposal::Vote.new.migrate_delegated_votes
+
+      expect(spending_proposal.votes_for.count).to eq(2)
+    end
+
+    it "verifies if delegated vote has already been created" do
+      forum = create(:forum)
+      represented_user = create(:represented_user, representative: forum)
+      spending_proposal = create(:spending_proposal)
+
+      create(:vote, votable: spending_proposal, voter: forum.user)
+
+      expect(spending_proposal.votes_for.count).to eq(1)
+
+      Migrations::SpendingProposal::Vote.new.migrate_delegated_votes
+      Migrations::SpendingProposal::Vote.new.migrate_delegated_votes
+
+      expect(spending_proposal.votes_for.count).to eq(2)
+    end
+
   end
 
   describe "#delegated_votes" do
@@ -169,6 +199,18 @@ describe Migrations::SpendingProposal::Vote do
       expect(budget_investment_vote.voter).to eq(spending_proposal_vote.voter)
       expect(budget_investment_vote.votable).to eq(budget_investment)
       expect(budget_investment_vote.vote_flag).to eq(true)
+    end
+
+    it "verifies if user has already voted" do
+      spending_proposal = create(:spending_proposal)
+      budget_investment = create(:budget_investment, original_spending_proposal_id: spending_proposal.id)
+
+      spending_proposal_vote = create(:vote, votable: spending_proposal)
+
+      Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
+      Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
+
+      expect(budget_investment.votes_for.count).to eq(1)
     end
 
     it "creates budget investment's votes for all correspoding spending proposal's votes" do
