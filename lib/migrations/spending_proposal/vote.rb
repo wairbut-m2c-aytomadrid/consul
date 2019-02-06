@@ -55,7 +55,9 @@ class Migrations::SpendingProposal::Vote
 
     def create_budget_invesment_vote(vote)
       budget_investment = find_budget_investment(vote.votable)
-      budget_investment.vote_by(voter: vote.voter, vote: "yes")
+      if budget_investment
+        budget_investment.vote_by(voter: vote.voter, vote: "yes")
+      end
     end
 
     def find_budget_investment(spending_proposal)

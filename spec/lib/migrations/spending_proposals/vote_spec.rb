@@ -228,5 +228,13 @@ describe Migrations::SpendingProposal::Vote do
       expect(budget_investment2.votes_for.count).to eq(5)
     end
 
+    it "gracefully handles missing corresponding budget investment" do
+      spending_proposal = create(:spending_proposal)
+      spending_proposal_vote = create(:vote, votable: spending_proposal)
+
+      expect{ Migrations::SpendingProposal::Vote.new.create_budget_investment_votes }
+      .not_to raise_error
+    end
+
   end
 end
