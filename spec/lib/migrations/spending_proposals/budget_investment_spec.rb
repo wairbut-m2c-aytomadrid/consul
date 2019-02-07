@@ -118,5 +118,18 @@ describe Migrations::SpendingProposal::BudgetInvestment do
 
       expect(Comment.count).to eq(0)
     end
+
+    it "verifies if the comment already exists" do
+      internal_comment = "This project will last 2 years"
+
+      spending_proposal.update(internal_comments: internal_comment)
+      spending_proposal.update(administrator: create(:administrator))
+
+      Migrations::SpendingProposal::BudgetInvestment.new(spending_proposal).update
+      Migrations::SpendingProposal::BudgetInvestment.new(spending_proposal).update
+
+      expect(Comment.count).to eq(1)
+    end
+
   end
 end

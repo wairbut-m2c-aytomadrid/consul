@@ -51,16 +51,14 @@ class Migrations::SpendingProposal::BudgetInvestment
 
     def create_valuation_comments
       if spending_proposal.internal_comments.present?
-        budget_investment.comments.create!(valuation_comment_attributes)
+        budget_investment.valuations.first_or_create!(valuation_comment_attributes)
       end
     end
 
     def valuation_comment_attributes
       {
         body: spending_proposal.internal_comments,
-        user: spending_proposal.administrator.user,
-        commentable: budget_investment,
-        valuation: true
+        user: spending_proposal.administrator.user
       }
     end
 
