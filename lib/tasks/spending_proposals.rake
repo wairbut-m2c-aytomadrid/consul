@@ -49,4 +49,14 @@ namespace :spending_proposals do
     Migrations::SpendingProposal::BudgetInvestments.new.update_all
     puts "Finished"
   end
+
+  desc "Migrates spending proposals ballots to budget investments ballots"
+  task migrate_ballots: :environment do
+    require "migrations/spending_proposal/ballots"
+
+    puts "Starting to migrate spending proposal ballots"
+    Migrations::SpendingProposal::Ballots.new.migrate_all
+    puts "Finished"
+  end
+
 end

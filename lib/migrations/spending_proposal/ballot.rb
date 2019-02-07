@@ -1,0 +1,59 @@
+class Migrations::SpendingProposal::Ballot
+  attr_accessor :spending_proposal_ballot, :budget_investment_ballot
+
+  def initialize(spending_proposal_ballot)
+    @spending_proposal_ballot = spending_proposal_ballot
+    @budget_investment_ballot = find_or_initialize_budget_investment_ballot
+  end
+
+  def migrate_ballot
+    if budget_investment_ballot.save
+      puts "."
+
+      migrate_ballot_lines
+    else
+      puts "Error creating budget investment ballot from spending proposal ballot #{spending_proposal_ballot.id}\n"
+    end
+  end
+
+  def migrate_ballot_lines
+    spending_proposal_ballot.spending_proposals.each do |spending_proposal|
+      budget_investment = find_budget_investment(spending_proposal)
+
+      ballot_line = new_ballot_line(budget_investment)
+      if ballot_line && ballot_line.save
+        print "."
+      else
+        puts "Error adding spending proposal: #{spending_proposal.id} to ballot: #{budget_investment_ballot.id}\n"
+      end
+    end
+  end
+
+  private
+
+    def budget
+      Budget.where(slug: "2016").first
+    end
+
+    def find_budget_investment(spending_proposal)
+      budget.investments.where(original_spending_proposal_id: spending_proposal.id).first
+    end
+
+    def find_or_initialize_budget_investment_ballot
+      Budget::Ballot.find_or_initialize_by(budget_investment_ballot_attributes)
+    end
+
+    def new_ballot_line(budget_investment)
+      if budget_investment
+        budget_investment_ballot.lines.new(investment: budget_investment)
+      end
+    end
+
+    def budget_investment_ballot_attributes
+      {
+        budget: budget,
+        user: spending_proposal_ballot.user
+      }
+    end
+
+end
