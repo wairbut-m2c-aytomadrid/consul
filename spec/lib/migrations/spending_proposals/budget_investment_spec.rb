@@ -131,5 +131,16 @@ describe Migrations::SpendingProposal::BudgetInvestment do
       expect(Comment.count).to eq(1)
     end
 
+    it "assigns the first administrator if a spending proposal does not have one" do
+      first_admin = create(:administrator).user
+      internal_comment = "This project will last 2 years"
+
+      spending_proposal.update(internal_comments: internal_comment)
+
+      Migrations::SpendingProposal::BudgetInvestment.new(spending_proposal).update
+
+      expect(Comment.first.author).to eq(first_admin)
+    end
+
   end
 end

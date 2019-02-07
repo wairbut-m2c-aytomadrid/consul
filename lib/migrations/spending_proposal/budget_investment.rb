@@ -58,8 +58,12 @@ class Migrations::SpendingProposal::BudgetInvestment
     def valuation_comment_attributes
       {
         body: spending_proposal.internal_comments,
-        user: spending_proposal.administrator.user
+        user: spending_proposal_administrator
       }
+    end
+
+    def spending_proposal_administrator
+      spending_proposal.administrator.try(&:user) || Administrator.first.user
     end
 
 end
