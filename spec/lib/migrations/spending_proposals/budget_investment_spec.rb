@@ -58,6 +58,7 @@ describe Migrations::SpendingProposal::BudgetInvestment do
 
       spending_proposal.feasible = false
       spending_proposal.valuation_finished = true
+      spending_proposal.update(administrator: create(:administrator))
 
       spending_proposal.save(validate: false)
 
