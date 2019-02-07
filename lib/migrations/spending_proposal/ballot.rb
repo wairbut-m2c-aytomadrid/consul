@@ -21,7 +21,7 @@ class Migrations::SpendingProposal::Ballot
       budget_investment = find_budget_investment(spending_proposal)
 
       ballot_line = new_ballot_line(budget_investment)
-      if ballot_line && ballot_line.save
+      if ballot_line_valid?(ballot_line) && ballot_line.save
         print "."
       else
         puts "Error adding spending proposal: #{spending_proposal.id} to ballot: #{budget_investment_ballot.id}\n"
@@ -47,6 +47,14 @@ class Migrations::SpendingProposal::Ballot
       if budget_investment
         budget_investment_ballot.lines.new(investment: budget_investment)
       end
+    end
+
+    def ballot_line_valid?(ballot_line)
+      ballot_line && ballot_line_does_not_exist?(ballot_line)
+    end
+
+    def ballot_line_does_not_exist?(ballot_line)
+      budget_investment_ballot.investments.exclude?(ballot_line.investment)
     end
 
     def budget_investment_ballot_attributes

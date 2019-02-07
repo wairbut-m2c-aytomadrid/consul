@@ -82,6 +82,19 @@ describe Migrations::SpendingProposal::Ballot do
         expect(budget_investment_ballot.investments).not_to include(budget_investment3)
       end
 
+      it "verifies that the ballot line does not exist" do
+        spending_proposal = create(:spending_proposal, feasible: true)
+        spending_proposal_ballot.spending_proposals << spending_proposal
+
+        budget_investment = budget_invesment_for(spending_proposal, heading: heading)
+
+        Migrations::SpendingProposal::Ballot.new(spending_proposal_ballot).migrate_ballot
+        Migrations::SpendingProposal::Ballot.new(spending_proposal_ballot).migrate_ballot
+
+        budget_investment_ballot = Budget::Ballot.first
+        expect(budget_investment_ballot.investments.count).to eq(1)
+      end
+
       it "gracefully handles missing corresponding budget investment" do
         spending_proposal = create(:spending_proposal, feasible: true)
         spending_proposal_ballot.spending_proposals << spending_proposal
