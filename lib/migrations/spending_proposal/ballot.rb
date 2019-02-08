@@ -1,7 +1,8 @@
 class Migrations::SpendingProposal::Ballot
-  attr_accessor :spending_proposal_ballot, :budget_investment_ballot
+  attr_accessor :spending_proposal_ballot, :budget_investment_ballot, :represented_user
 
-  def initialize(spending_proposal_ballot)
+  def initialize(spending_proposal_ballot, represented_user=nil)
+    @represented_user = represented_user
     @spending_proposal_ballot = spending_proposal_ballot
     @budget_investment_ballot = find_or_initialize_budget_investment_ballot
   end
@@ -60,8 +61,12 @@ class Migrations::SpendingProposal::Ballot
     def budget_investment_ballot_attributes
       {
         budget: budget,
-        user: spending_proposal_ballot.user
+        user: user
       }
+    end
+
+    def user
+      represented_user || spending_proposal_ballot.user
     end
 
 end
