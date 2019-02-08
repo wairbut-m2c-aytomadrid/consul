@@ -8,7 +8,7 @@ class Migrations::SpendingProposal::Ballot
   end
 
   def migrate_ballot
-    if budget_investment_ballot.save
+    if budget_investment_ballot_valid?
       puts "."
 
       migrate_ballot_lines
@@ -42,6 +42,10 @@ class Migrations::SpendingProposal::Ballot
 
     def find_or_initialize_budget_investment_ballot
       Budget::Ballot.find_or_initialize_by(budget_investment_ballot_attributes)
+    end
+
+    def budget_investment_ballot_valid?
+      budget_investment_ballot.new_record? && budget_investment_ballot.save
     end
 
     def new_ballot_line(budget_investment)
