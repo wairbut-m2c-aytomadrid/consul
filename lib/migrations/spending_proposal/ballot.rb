@@ -2,6 +2,8 @@ require_dependency "budget"
 require_dependency "budget/ballot"
 
 class Migrations::SpendingProposal::Ballot
+  include Migrations::Log
+
   attr_accessor :spending_proposal_ballot, :budget_investment_ballot, :represented_user
 
   def initialize(spending_proposal_ballot, represented_user=nil)
@@ -12,11 +14,11 @@ class Migrations::SpendingProposal::Ballot
 
   def migrate_ballot
     if budget_investment_ballot_valid?
-      puts "."
+      log(".")
 
       migrate_ballot_lines
     else
-      puts "Error creating budget investment ballot from spending proposal ballot #{spending_proposal_ballot.id}\n"
+      log("\nError creating budget investment ballot from spending proposal ballot #{spending_proposal_ballot.id}\n")
     end
   end
 
@@ -26,9 +28,9 @@ class Migrations::SpendingProposal::Ballot
 
       ballot_line = new_ballot_line(budget_investment)
       if ballot_line_valid?(ballot_line) && ballot_line.save
-        print "."
+        log(".")
       else
-        puts "Error adding spending proposal: #{spending_proposal.id} to ballot: #{budget_investment_ballot.id}\n"
+        log("\nError adding spending proposal: #{spending_proposal.id} to ballot: #{budget_investment_ballot.id}\n")
       end
     end
   end

@@ -1,4 +1,6 @@
 class Migrations::SpendingProposal::BudgetInvestment
+  include Migrations::Log
+
   attr_accessor :spending_proposal, :budget_investment
 
   def initialize(spending_proposal)
@@ -8,9 +10,9 @@ class Migrations::SpendingProposal::BudgetInvestment
 
   def update
     if updated?
-      print "."
+      log(".")
     else
-      puts "Error updating budget investment from spending proposal: #{spending_proposal.id}\n"
+      log("\nError updating budget investment from spending proposal: #{spending_proposal.id}\n")
     end
   end
 
