@@ -1,3 +1,6 @@
+require_dependency "budget"
+require_dependency "budget/ballot"
+
 class Migrations::SpendingProposal::Ballot
   attr_accessor :spending_proposal_ballot, :budget_investment_ballot, :represented_user
 
