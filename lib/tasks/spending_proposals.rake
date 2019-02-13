@@ -61,7 +61,7 @@ namespace :spending_proposals do
 
 
   desc "Migrates spending proposals delegated ballots to budget investments ballots"
-  task migrate_ballots: :environment do
+  task migrate_delegated_ballots: :environment do
     require "migrations/spending_proposal/delegated_ballots"
 
     puts "Starting to migrate spending proposals delegated ballots"
