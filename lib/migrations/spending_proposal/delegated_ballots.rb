@@ -14,7 +14,7 @@ class Migrations::SpendingProposal::DelegatedBallots
   private
 
     def load_delegated_ballots
-      Ballot.where(user: User.forums)
+      ::Ballot.where(user: User.forums)
     end
 
 
