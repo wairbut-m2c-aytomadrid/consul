@@ -13,9 +13,8 @@ class Migrations::SpendingProposal::Ballot
   end
 
   def migrate_ballot
-    if budget_investment_ballot_valid?
+    if budget_investment_ballot_saved?
       log(".")
-
       migrate_ballot_lines
     else
       log("\nError creating budget investment ballot from spending proposal ballot #{spending_proposal_ballot.id}\n")
@@ -26,11 +25,17 @@ class Migrations::SpendingProposal::Ballot
     spending_proposal_ballot.spending_proposals.each do |spending_proposal|
       budget_investment = find_budget_investment(spending_proposal)
 
-      ballot_line = new_ballot_line(budget_investment)
-      if ballot_line_valid?(ballot_line) && ballot_line.save
+      if budget_investment.blank?
+        log("Budget investment not found for spending proposal #{spending_proposal.id}")
+        next
+      end
+
+      ballot_line = find_or_initialize_ballot_line(budget_investment)
+      if ballot_line_saved?(ballot_line)
         log(".")
       else
-        log("\nError adding spending proposal: #{spending_proposal.id} to ballot: #{budget_investment_ballot.id}\n")
+        log("Error adding spending proposal: #{spending_proposal.id} to ballot: #{budget_investment_ballot.id}\n")
+        log(ballot_line.errors.messages)
       end
     end
   end
@@ -49,22 +54,24 @@ class Migrations::SpendingProposal::Ballot
       Budget::Ballot.find_or_initialize_by(budget_investment_ballot_attributes)
     end
 
-    def budget_investment_ballot_valid?
+    def find_or_initialize_ballot_line(investment)
+      return nil if investment.blank?
+
+      attributes = { ballot: budget_investment_ballot, investment: investment }
+      budget_investment_ballot.lines.where(attributes).first_or_initialize
+    end
+
+    def budget_investment_ballot_saved?
       budget_investment_ballot.new_record? && budget_investment_ballot.save
     end
 
-    def new_ballot_line(budget_investment)
-      if budget_investment
-        budget_investment_ballot.lines.new(investment: budget_investment)
-      end
+    def ballot_line_saved?(ballot_line)
+      return true if ballot_line_exists?(ballot_line)
+      ballot_line.save(validate: false)
     end
 
-    def ballot_line_valid?(ballot_line)
-      ballot_line && ballot_line_does_not_exist?(ballot_line)
-    end
-
-    def ballot_line_does_not_exist?(ballot_line)
-      budget_investment_ballot.investments.exclude?(ballot_line.investment)
+    def ballot_line_exists?(ballot_line)
+      budget_investment_ballot.investments.include?(ballot_line.investment)
     end
 
     def budget_investment_ballot_attributes

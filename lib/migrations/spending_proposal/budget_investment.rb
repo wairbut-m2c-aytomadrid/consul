@@ -27,10 +27,12 @@ class Migrations::SpendingProposal::BudgetInvestment
     end
 
     def updated?
-      return unless budget_investment
+      if budget_investment.blank?
+        log("No budget investment found for #{spending_proposal.id}")
+        return false
+      end
 
-      update_attributes &&
-      create_valuation_comments
+      update_attributes && create_valuation_comments
     end
 
     def update_attributes
@@ -52,9 +54,20 @@ class Migrations::SpendingProposal::BudgetInvestment
     end
 
     def create_valuation_comments
-      if spending_proposal.internal_comments.present?
-        budget_investment.valuations.first_or_create!(valuation_comment_attributes)
+      return true if spending_proposal.internal_comments.blank?
+
+      comment = new_valuation_comment
+      if comment.save
+        log(".")
+      else
+        log("Error creating comment for budget investment: #{budget_investment.id}\n")
+        log(comment.errors.messages)
+        return false
       end
+    end
+
+    def new_valuation_comment
+      budget_investment.valuations.first_or_initialize(valuation_comment_attributes)
     end
 
     def valuation_comment_attributes
