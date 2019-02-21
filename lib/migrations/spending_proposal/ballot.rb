@@ -67,6 +67,8 @@ class Migrations::SpendingProposal::Ballot
 
     def ballot_line_saved?(ballot_line)
       return true if ballot_line_exists?(ballot_line)
+
+      ballot_line.set_denormalized_ids
       ballot_line.save(validate: false)
     end
 

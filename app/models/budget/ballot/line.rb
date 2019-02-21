@@ -31,13 +31,13 @@ class Budget
         errors.add(:investment, "unselected investment") unless investment.selected?
       end
 
-      private
+      def set_denormalized_ids
+        self.heading_id ||= investment.try(:heading_id)
+        self.group_id   ||= investment.try(:group_id)
+        self.budget_id  ||= investment.try(:budget_id)
+      end
 
-        def set_denormalized_ids
-          self.heading_id ||= investment.try(:heading_id)
-          self.group_id   ||= investment.try(:group_id)
-          self.budget_id  ||= investment.try(:budget_id)
-        end
+      private
 
         def store_user_heading
           return if heading.city_heading?
