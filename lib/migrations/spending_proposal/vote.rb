@@ -21,11 +21,25 @@ class Migrations::SpendingProposal::Vote
       budget_investment = find_budget_investment(vote.votable)
       return false unless budget_investment
 
-      if budget_investment.vote_by(voter: vote.voter, vote: "yes")
+      if vote.voter
+        budget_investment.vote_by(voter: vote.voter, vote: "yes")
+        log(".")
+      elsif vote_with_hidden_user(vote.voter_id, budget_investment)
         log(".")
       else
         log("\nError creating budget investment vote from spending proposal vote: #{vote.id}\n")
       end
+    end
+
+    def vote_with_hidden_user(voter_id, budget_investment)
+      vote_attributes = {
+        voter_id: voter_id,
+        votable: budget_investment,
+        vote_flag: true
+      }
+
+      vote = Vote.where(vote_attributes).first_or_create
+      vote.save(validate: false)
     end
 
 end
