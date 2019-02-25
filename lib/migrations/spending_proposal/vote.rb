@@ -4,7 +4,6 @@ class Migrations::SpendingProposal::Vote
   def create_budget_investment_votes
     spending_proposal_votes.each do |vote|
       create_budget_invesment_vote(vote)
-      log(".")
     end
   end
 
@@ -20,8 +19,12 @@ class Migrations::SpendingProposal::Vote
 
     def create_budget_invesment_vote(vote)
       budget_investment = find_budget_investment(vote.votable)
-      if budget_investment
-        budget_investment.vote_by(voter: vote.voter, vote: "yes")
+      return false unless budget_investment
+
+      if budget_investment.vote_by(voter: vote.voter, vote: "yes")
+        log(".")
+      else
+        log("\nError creating budget investment vote from spending proposal vote: #{vote.id}\n")
       end
     end
 
