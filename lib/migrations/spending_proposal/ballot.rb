@@ -78,13 +78,13 @@ class Migrations::SpendingProposal::Ballot
 
     def budget_investment_ballot_attributes
       {
-        budget: budget,
-        user: user
+        budget_id: budget.id,
+        user_id: user_id
       }
     end
 
-    def user
-      represented_user || spending_proposal_ballot.user
+    def user_id
+      represented_user.try(:id) || spending_proposal_ballot.user_id
     end
 
 end

@@ -25,7 +25,7 @@ describe Migrations::SpendingProposal::Ballot do
 
     context "ballot" do
 
-      it "migrates the ballot" do
+      it "migrates a ballot" do
         Migrations::SpendingProposal::Ballot.new(spending_proposal_ballot).migrate_ballot
 
         expect(Budget::Ballot.count).to eq(1)
@@ -33,6 +33,18 @@ describe Migrations::SpendingProposal::Ballot do
         budget_investment_ballot = Budget::Ballot.first
         expect(budget_investment_ballot.budget).to eq(budget)
         expect(budget_investment_ballot.user).to eq(spending_proposal_ballot.user)
+      end
+
+      it "migrates a ballot for hidden users" do
+        spending_proposal_ballot.user.hide
+
+        Migrations::SpendingProposal::Ballot.new(spending_proposal_ballot).migrate_ballot
+
+        expect(Budget::Ballot.count).to eq(1)
+
+        budget_investment_ballot = Budget::Ballot.first
+        expect(budget_investment_ballot.budget).to eq(budget)
+        expect(budget_investment_ballot.user_id).to eq(spending_proposal_ballot.user_id)
       end
 
       it "verifies if ballot has already been created" do
