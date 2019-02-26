@@ -13,7 +13,9 @@ class Migrations::SpendingProposal::Ballot
   end
 
   def migrate_ballot
-    if budget_investment_ballot_saved?
+    return if user_already_voted?
+
+    if budget_investment_ballot.save
       log(".")
       migrate_ballot_lines
     else
@@ -61,8 +63,8 @@ class Migrations::SpendingProposal::Ballot
       budget_investment_ballot.lines.where(attributes).first_or_initialize
     end
 
-    def budget_investment_ballot_saved?
-      budget_investment_ballot.new_record? && budget_investment_ballot.save
+    def user_already_voted?
+      budget_investment_ballot.ballot_lines_count > 0
     end
 
     def ballot_line_saved?(ballot_line)
