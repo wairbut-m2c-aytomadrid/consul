@@ -135,4 +135,4 @@ Setting['feature.homepage.widgets.feeds.processes'] = true
 Setting.create(key: 'hot_score_period_in_days', value: 31)
 
 # Default custom pages
-load Rails.root.join("db", "pages.rb")
+load Rails.root.join("db", "custom_pages.rb")
