@@ -64,7 +64,7 @@ class Migrations::SpendingProposal::Ballot
     end
 
     def user_already_voted?
-      budget_investment_ballot.ballot_lines_count > 0
+      budget_investment_ballot.ballot_lines_count > 0 && represented_user
     end
 
     def ballot_line_saved?(ballot_line)
