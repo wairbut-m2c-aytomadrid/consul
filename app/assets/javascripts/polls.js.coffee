@@ -18,7 +18,7 @@ App.Polls =
   showTokenMessage: ->
     token_message = $(".js-token-message")
     if !token_message.is(':visible') && $('.js-marked-answer').length > 0
-      token_message.html(token_message.html() + "<br><strong>" + @token + "</strong>")
+      token_message.html("#{token_message.html()}<br><strong>#{@token}</strong>")
       token_message.show()
 
   initialize: ->

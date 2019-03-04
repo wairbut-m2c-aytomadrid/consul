@@ -21,7 +21,7 @@ App.Tracks =
       dimension_hash = null
     else
       dimension_hash = {}
-      dimension_hash['dimension' + dimension] = dimension_value
+      dimension_hash["dimension#{dimension}"] = dimension_value
 
     if category?
       _paq.push(['trackEvent', category, action, name, custom_value, dimension_hash])

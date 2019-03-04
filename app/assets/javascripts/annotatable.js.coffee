@@ -7,9 +7,9 @@ App.Annotatable =
       annotator.ui.editor.Editor.template = [
         '<div class="annotator-outer annotator-editor annotator-hide">',
         '  <form class="annotator-widget">',
-        '    ' + _t('Unregistered'),
+        "    #{_t('Unregistered')}",
         '    <div class="annotator-controls">',
-        '      <a href="#cancel" class="annotator-cancel">' + _t('Cancel') + '</a>',
+        "      <a href='#cancel' class='annotator-cancel'>#{_t('Cancel')}</a>",
         '    </div>',
         '  </form>',
         '</div>'
@@ -24,7 +24,7 @@ App.Annotatable =
       app = new annotator.App()
         .include ->
           beforeAnnotationCreated: (ann) ->
-            ann[ann_type + "_id"] = ann_id
+            ann["#{ann_type}_id"] = ann_id
             ann.permissions = ann.permissions || {}
             ann.permissions.admin = []
         .include(annotator.storage.http, { prefix: "", urls: { search: "/annotations/search" } })
@@ -58,5 +58,5 @@ App.Annotatable =
           app.ident.identity = current_user_id
 
         options = {}
-        options[ann_type + "_id"] = ann_id
+        options["#{ann_type}_id"] = ann_id
         app.annotations.load(options)
