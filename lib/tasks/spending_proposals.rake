@@ -1,4 +1,5 @@
 namespace :spending_proposals do
+
   desc "Migrates Existing 2016 Spending Proposals to Budget Investments (PARTIALLY)"
   task migrate_to_budgets: :environment do
     puts "We have #{SpendingProposal.count} spending proposals"
@@ -37,30 +38,26 @@ namespace :spending_proposals do
   desc "Migrates all necessary data from spending proposals to budget investments"
   task migrate: [
     "spending_proposals:migrate_attributes",
-    "spending_proposals:migrate_delegated_votes",
+    "spending_proposals:migrate_votes",
     "spending_proposals:migrate_ballots",
     "spending_proposals:migrate_delegated_ballots",
   ]
 
-  desc "Migrates delegated votes to represented user votes"
-  task migrate_delegated_votes: :environment do
-    require "migrations/spending_proposal/vote"
-
-    puts "Starting to migrate delegated votes"
-    Migrations::SpendingProposal::Vote.new.migrate_delegated_votes
-    puts "Finished"
-
-    puts "Starting to migrate votes"
-    Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
-    puts "Finished"
-  end
-
-  desc "Migrates spending proposals attributes to corresponding budget investments attributes"
+  desc "Migrates spending proposals attributes to budget investments attributes"
   task migrate_attributes: :environment do
     require "migrations/spending_proposal/budget_investments"
 
     puts "Starting to migrate attributes"
     Migrations::SpendingProposal::BudgetInvestments.new.update_all
+    puts "Finished"
+  end
+
+  desc "Migrates spending proposl votes to budget investment votes"
+  task migrate_votes: :environment do
+    require "migrations/spending_proposal/vote"
+
+    puts "Starting to migrate votes"
+    Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
     puts "Finished"
   end
 
@@ -72,7 +69,6 @@ namespace :spending_proposals do
     Migrations::SpendingProposal::Ballots.new.migrate_all
     puts "Finished"
   end
-
 
   desc "Migrates spending proposals delegated ballots to budget investments ballots"
   task migrate_delegated_ballots: :environment do
