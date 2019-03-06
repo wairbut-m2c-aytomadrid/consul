@@ -66,19 +66,6 @@ describe Migrations::SpendingProposal::Vote do
       expect(budget_investment.votes_for.count).to eq(1)
     end
 
-    it "verifies if hidden user has already voted" do
-      spending_proposal = create(:spending_proposal)
-      budget_investment = create(:budget_investment, original_spending_proposal_id: spending_proposal.id)
-
-      spending_proposal_vote = create(:vote, votable: spending_proposal)
-      spending_proposal_vote.voter.hide
-
-      Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
-      Migrations::SpendingProposal::Vote.new.create_budget_investment_votes
-
-      expect(budget_investment.votes_for.count).to eq(1)
-    end
-
     it "gracefully handles missing corresponding budget investment" do
       spending_proposal = create(:spending_proposal)
       spending_proposal_vote = create(:vote, votable: spending_proposal)
