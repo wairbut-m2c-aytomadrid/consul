@@ -271,7 +271,7 @@ feature 'Admin polls' do
         expect(page).to have_content "There are no results"
       end
 
-      scenario 'Show partial results' do
+      scenario "Show partial results" do
         poll = create(:poll)
 
         booth_assignment_1 = create(:poll_booth_assignment, poll: poll)
@@ -279,24 +279,24 @@ feature 'Admin polls' do
         booth_assignment_3 = create(:poll_booth_assignment, poll: poll)
 
         question_1 = create(:poll_question, poll: poll)
-        create(:poll_question_answer, title: 'Oui', question: question_1)
-        create(:poll_question_answer, title: 'Non', question: question_1)
+        create(:poll_question_answer, title: "Oui", question: question_1)
+        create(:poll_question_answer, title: "Non", question: question_1)
 
         question_2 = create(:poll_question, poll: poll)
         create(:poll_question_answer, title: "Aujourd'hui", question: question_2)
-        create(:poll_question_answer, title: 'Demain', question: question_2)
+        create(:poll_question_answer, title: "Demain", question: question_2)
 
         [booth_assignment_1, booth_assignment_2, booth_assignment_3].each do |ba|
           create(:poll_partial_result,
                  booth_assignment: ba,
                  question: question_1,
-                 answer: 'Oui',
+                 answer: "Oui",
                  amount: 11)
 
           create(:poll_partial_result,
                  booth_assignment: ba,
                  question: question_2,
-                 answer: 'Demain',
+                 answer: "Demain",
                  amount: 5)
         end
 
@@ -308,7 +308,7 @@ feature 'Admin polls' do
 
         visit admin_poll_results_path(poll)
 
-        expect(page).to have_content 'Results by booth'
+        expect(page).to have_content "Results by booth"
       end
 
       scenario "Enable stats and results for booth polls" do
@@ -339,14 +339,14 @@ feature 'Admin polls' do
 
         visit admin_poll_results_path(unvoted_poll)
 
-        expect(page).to have_content 'There are no results'
-        expect(page).not_to have_content 'Show results and stats'
+        expect(page).to have_content "There are no results"
+        expect(page).not_to have_content "Show results and stats"
 
         visit admin_poll_results_path(voted_poll)
 
-        expect(page).to have_content 'Show results and stats'
-        expect(page).not_to have_content 'There are no results'
-        expect(page).not_to have_content 'Results by booth'
+        expect(page).to have_content "Show results and stats"
+        expect(page).not_to have_content "There are no results"
+        expect(page).not_to have_content "Results by booth"
       end
 
       scenario "Results by answer", :js do
