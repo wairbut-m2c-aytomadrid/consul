@@ -25,15 +25,4 @@ class Migrations::SpendingProposal::Vote
       end
     end
 
-    def vote_with_hidden_user(voter_id, budget_investment)
-      vote_attributes = {
-        voter_id: voter_id,
-        votable: budget_investment,
-        vote_flag: true
-      }
-
-      vote = Vote.where(vote_attributes).first_or_create
-      vote.save(validate: false)
-    end
-
 end
