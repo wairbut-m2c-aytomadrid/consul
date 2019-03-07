@@ -132,7 +132,7 @@ Setting['feature.homepage.widgets.feeds.debates'] = true
 Setting['feature.homepage.widgets.feeds.processes'] = true
 
 # Votes hot_score configuration
-Setting.create(key: 'hot_score_period_in_days', value: 31)
+Setting["hot_score_period_in_days"] = 31
 
 # Default custom pages
 load Rails.root.join("db", "custom_pages.rb")
