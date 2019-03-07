@@ -1,3 +1,5 @@
+require_dependency "spending_proposal"
+
 class Migrations::SpendingProposal::Budget
   attr_accessor :budget
 
@@ -108,8 +110,8 @@ class Migrations::SpendingProposal::Budget
     end
 
     def update_selected_investments
-      SpendingProposal.feasible.valuation_finished.each do |spending_proposal|
-        find_budget_investment(spending_proposal).update(selected: true)
+      ::SpendingProposal.feasible.valuation_finished.each do |spending_proposal|
+        find_budget_investment(spending_proposal)&.update(selected: true)
       end
     end
 
@@ -151,7 +153,7 @@ class Migrations::SpendingProposal::Budget
     end
 
     def find_budget
-      Budget.where(slug: 2016).first
+      ::Budget.where(slug: 2016).first
     end
 
 end
