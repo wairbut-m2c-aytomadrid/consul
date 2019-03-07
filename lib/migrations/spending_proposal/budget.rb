@@ -10,6 +10,15 @@ class Migrations::SpendingProposal::Budget
     update_heading_population
     update_selected_investments
   end
+
+  def post_rake_tasks
+    remove_forum_votes
+    remove_forum_ballots
+    update_cached_votes
+    update_cached_ballots
+    calculate_winners
+  end
+
   private
 
     def update_heading_price
@@ -103,4 +112,46 @@ class Migrations::SpendingProposal::Budget
         find_budget_investment(spending_proposal).update(selected: true)
       end
     end
+
+    def remove_forum_votes
+      forums.each do |forum|
+        forum.user.votes.where(votable: budget.investments).destroy_all
+      end
+    end
+
+    def remove_forum_ballots
+      forums.each do |forum|
+        Budget::Ballot.where(user: forum.user).first&.destroy
+      end
+    end
+
+    def update_cached_votes
+      budget.investments.map(&:update_cached_votes)
+    end
+
+    def update_cached_ballots
+      budget.investments.each do |investment|
+        ballot_lines_count = budget.lines.where(investment: investment).count
+        investment.update(ballot_lines_count: ballot_lines_count)
+      end
+    end
+
+    def calculate_winners
+      budget.headings.each do |heading|
+        Budget::Result.new(budget, heading).calculate_winners
+      end
+    end
+
+    def forums
+      Forum.all
+    end
+
+    def find_budget_investment(spending_proposal)
+      budget.investments.where(original_spending_proposal_id: spending_proposal.id).first
+    end
+
+    def find_budget
+      Budget.where(slug: 2016).first
+    end
+
 end

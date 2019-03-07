@@ -97,3 +97,107 @@ describe Migrations::SpendingProposal::Budget do
     end
   end
 
+  describe "#post_rake_tasks" do
+
+    let!(:group)   { create(:budget_group, budget: budget) }
+    let!(:heading) { create(:budget_heading, group: group, price: 99999999) }
+
+    it "Destros all forum votes" do
+      forum1 = create(:forum)
+      forum2 = create(:forum)
+      investment = create(:budget_investment, heading: heading)
+
+      forum1_vote = create(:vote, voter: forum1.user, votable: investment)
+      forum2_vote = create(:vote, voter: forum2.user, votable: investment)
+      user_vote = create(:vote, votable: investment)
+
+      migration = Migrations::SpendingProposal::Budget.new
+      migration.post_rake_tasks
+
+      expect(Vote.count).to eq(1)
+      expect(Vote.all).to include(user_vote)
+    end
+
+    it "Destros all forum ballots" do
+      forum1 = create(:forum)
+      forum2 = create(:forum)
+      investment = create(:budget_investment, :selected, heading: heading)
+
+      forum1_ballot = create(:budget_ballot, budget: budget, user: forum1.user)
+      forum2_ballot = create(:budget_ballot, budget: budget, user: forum2.user)
+      user_ballot   = create(:budget_ballot, budget: budget)
+
+      create(:budget_ballot_line, ballot: forum1_ballot, investment: investment)
+      create(:budget_ballot_line, ballot: forum2_ballot, investment: investment)
+      create(:budget_ballot_line, ballot: user_ballot,   investment: investment)
+
+      migration = Migrations::SpendingProposal::Budget.new
+      migration.post_rake_tasks
+
+      expect(Budget::Ballot.count).to eq(1)
+      expect(Budget::Ballot.all).to include(user_ballot)
+
+      expect(Budget::Ballot::Line.count).to eq(1)
+      expect(Budget::Ballot::Line.all).to include(user_ballot.lines.first)
+    end
+
+    it "Updates cached votes" do
+      investment = create(:budget_investment, :selected, heading: heading)
+
+      create(:vote, votable: investment)
+      create(:vote, votable: investment)
+
+      investment.update(cached_votes_up: 3)
+
+      investment.reload
+      expect(investment.cached_votes_up).to eq(3)
+
+      migration = Migrations::SpendingProposal::Budget.new
+      migration.post_rake_tasks
+
+      investment.reload
+      expect(investment.cached_votes_up).to eq(2)
+    end
+
+    it "Updates cached ballot lines" do
+      investment = create(:budget_investment, :selected, heading: heading)
+
+      ballot1 = create(:budget_ballot, budget: budget)
+      ballot2 = create(:budget_ballot, budget: budget)
+
+      create(:budget_ballot_line, ballot: ballot1, investment: investment)
+      create(:budget_ballot_line, ballot: ballot2, investment: investment)
+
+      investment.update(ballot_lines_count: 3)
+
+      investment.reload
+      expect(investment.ballot_lines_count).to eq(3)
+
+      migration = Migrations::SpendingProposal::Budget.new
+      migration.post_rake_tasks
+
+      investment.reload
+      expect(investment.ballot_lines_count).to eq(2)
+    end
+
+    it "Calculates winners" do
+      ballot = create(:budget_ballot, budget: budget)
+
+      investment1 = create(:budget_investment, :selected, heading: heading)
+      investment2 = create(:budget_investment, :selected, heading: heading)
+      investment3 = create(:budget_investment, :selected, heading: heading)
+
+      create(:budget_ballot_line, ballot: ballot, investment: investment1)
+      create(:budget_ballot_line, ballot: ballot, investment: investment2)
+
+      results = Budget::Result.new(budget, heading)
+      expect(results.winners.count).to eq(0)
+
+      migration = Migrations::SpendingProposal::Budget.new
+      migration.post_rake_tasks
+
+      expect(results.winners.count).to eq(3)
+    end
+
+  end
+end
