@@ -76,9 +76,28 @@ feature 'Results' do
     end
   end
 
-  scenario "Load first budget heading if not specified" do
+  scenario "Load city heading if not specified" do
+    city_heading = create(:budget_heading, group: group)
+    city_investment = create(:budget_investment, :winner, heading: city_heading)
+
     other_heading = create(:budget_heading, group: group)
     other_investment = create(:budget_investment, :winner, heading: other_heading)
+
+    allow_any_instance_of(Budget).to receive(:city_heading).and_return(city_heading)
+
+    visit custom_budget_results_path(budget)
+
+    within("#budget-investments-compatible") do
+      expect(page).to have_content city_investment.title
+      expect(page).not_to have_content other_investment.title
+    end
+  end
+
+  scenario "Load first budget heading if not specified and city heading does not exist" do
+    other_heading = create(:budget_heading, group: group)
+    other_investment = create(:budget_investment, :winner, heading: other_heading)
+
+    allow_any_instance_of(Budget).to receive(:city_heading).and_return(nil)
 
     visit custom_budget_results_path(budget)
 
