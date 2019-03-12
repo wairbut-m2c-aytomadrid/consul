@@ -169,6 +169,31 @@ describe Migrations::SpendingProposal::DelegatedBallot do
         expect(represented_user2_ballot.investments).not_to include(budget_investment3)
       end
 
+      it "migrates ballot lines if represented user had a ballot with no ballot lines" do
+        forum = create(:forum)
+        delegated_ballot = create(:ballot, user: forum.user)
+
+        represented_user = create(:represented_user, representative: forum)
+        represented_user_ballot = create(:budget_ballot, user: represented_user, budget: budget)
+
+        spending_proposal1 = create(:spending_proposal, feasible: true)
+        spending_proposal2 = create(:spending_proposal, feasible: true)
+        spending_proposal3 = create(:spending_proposal, feasible: true)
+
+        budget_investment1 = budget_invesment_for(spending_proposal1, heading: heading)
+        budget_investment2 = budget_invesment_for(spending_proposal2, heading: heading)
+        budget_investment3 = budget_invesment_for(spending_proposal3, heading: heading)
+
+        delegated_ballot.spending_proposals << spending_proposal1
+        delegated_ballot.spending_proposals << spending_proposal2
+
+        Migrations::SpendingProposal::DelegatedBallot.new(delegated_ballot).migrate_delegated_ballot
+
+        expect(represented_user_ballot.investments).to include(budget_investment1)
+        expect(represented_user_ballot.investments).to include(budget_investment2)
+        expect(represented_user_ballot.investments).not_to include(budget_investment3)
+      end
+
       it "verifies if represented user already has ballot lines" do
         forum = create(:forum)
         delegated_ballot = create(:ballot, user: forum.user)

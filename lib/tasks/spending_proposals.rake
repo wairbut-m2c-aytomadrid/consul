@@ -37,11 +37,22 @@ namespace :spending_proposals do
 
   desc "Migrates all necessary data from spending proposals to budget investments"
   task migrate: [
+    "spending_proposals:pre_migrate",
     "spending_proposals:migrate_attributes",
     "spending_proposals:migrate_votes",
     "spending_proposals:migrate_ballots",
     "spending_proposals:migrate_delegated_ballots",
+    "spending_proposals:post_migrate",
   ]
+
+  desc "Run the required actions before the migration"
+  task pre_migrate: :environment do
+    require "migrations/spending_proposal/budget"
+
+    puts "Starting pre rake tasks"
+    Migrations::SpendingProposal::Budget.new.pre_rake_tasks
+    puts "Finished"
+  end
 
   desc "Migrates spending proposals attributes to budget investments attributes"
   task migrate_attributes: :environment do
@@ -76,6 +87,15 @@ namespace :spending_proposals do
 
     puts "Starting to migrate delegated ballots"
     Migrations::SpendingProposal::DelegatedBallots.new.migrate_all
+    puts "Finished"
+  end
+
+  desc "Run the required actions after the migration"
+  task post_migrate: :environment do
+    require "migrations/spending_proposal/budget"
+
+    puts "Starting post rake tasks"
+    Migrations::SpendingProposal::Budget.new.post_rake_tasks
     puts "Finished"
   end
 
