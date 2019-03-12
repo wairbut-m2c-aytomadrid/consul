@@ -149,6 +149,6 @@ class Budget::Stats
     stats_cache :voters, :participants, :authors, :balloters, :poll_ballot_voters
 
     def stats_cache(key, &block)
-      Rails.cache.fetch("budgets_stats/#{budget.id}/#{key}/v11", &block)
+      Rails.cache.fetch("budgets_stats/#{budget.id}/#{key}/v12", &block)
     end
 end
