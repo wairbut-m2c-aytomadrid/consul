@@ -23,13 +23,13 @@ section "Creating Settings" do
   Setting.create(key: "url", value: "http://localhost:3000")
   Setting.create(key: "org_name", value: "Decide Madrid")
 
-  Setting.create(key: "feature.featured_proposals", value: "true")
   Setting.create(key: "process.debates", value: "true")
   Setting.create(key: "process.proposals", value: "true")
   Setting.create(key: "process.polls", value: "true")
   Setting.create(key: "process.budgets", value: "true")
   Setting.create(key: "process.legislation", value: "true")
 
+  Setting.create(key: "feature.featured_proposals", value: "true")
   Setting.create(key: "feature.spending_proposals", value: nil)
   Setting.create(key: "feature.spending_proposal_features.voting_allowed", value: nil)
   Setting.create(key: "feature.spending_proposal_features.phase1", value: nil)
