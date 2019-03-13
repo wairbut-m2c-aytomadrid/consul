@@ -6,6 +6,7 @@ class Admin::SettingsController < Admin::BaseController
       hidden_settings.include?(setting.key)
     end
     @feature_settings = all_settings["feature"]
+    @map_configuration_settings = all_settings["map"]
   end
 
   def update
@@ -15,9 +16,9 @@ class Admin::SettingsController < Admin::BaseController
   end
 
   def update_map
-    Setting["map_latitude"] = params[:latitude].to_f
-    Setting["map_longitude"] = params[:longitude].to_f
-    Setting["map_zoom"] = params[:zoom].to_i
+    Setting["map.latitude"] = params[:latitude].to_f
+    Setting["map.longitude"] = params[:longitude].to_f
+    Setting["map.zoom"] = params[:zoom].to_i
     redirect_to admin_settings_path, notice: t("admin.settings.index.map.flash.update")
   end
 

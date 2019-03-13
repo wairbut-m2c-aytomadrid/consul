@@ -119,9 +119,9 @@ Setting['featured_proposals_number'] = 3
 Setting['proposal_improvement_path'] = nil
 
 # City map feature default configuration (Greenwich)
-Setting['map_latitude'] = 40.4332002
-Setting['map_longitude'] = -3.7009591
-Setting['map_zoom'] = 10
+Setting["map.latitude"] = 40.4332002
+Setting["map.longitude"] = -3.7009591
+Setting["map.zoom"] = 10
 
 # Related content
 Setting['related_content_score_threshold'] = -0.3
