@@ -6,6 +6,7 @@ class Admin::SettingsController < Admin::BaseController
       hidden_settings.include?(setting.key)
     end
     @feature_settings = all_settings["feature"]
+    @participation_processes_settings = all_settings["process"]
     @map_configuration_settings = all_settings["map"]
   end
 
