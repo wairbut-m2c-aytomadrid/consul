@@ -58,8 +58,9 @@ section "Creating Settings" do
   Setting.create(key: "feature.guides", value: true)
   Setting.create(key: "feature.help_page", value: "true")
 
-  Setting.create(key: "per_page_code_head", value: "")
-  Setting.create(key: "per_page_code_body", value: "")
+  Setting.create(key: "html.per_page_code_head", value: "")
+  Setting.create(key: "html.per_page_code_body", value: "")
+
   Setting.create(key: "comments_body_max_length", value: "1000")
   Setting.create(key: "mailer_from_name", value: "Decide Madrid")
   Setting.create(key: "mailer_from_address", value: "noreply@madrid.es")
@@ -99,8 +100,8 @@ section "Creating Settings" do
   # piwik_tracking_code_body = "<!-- Piwik -->
   # <noscript><p><img src='//webanalytics01.madrid.es/piwik.php?idsite=6' style='border:0;' alt=' /></p></noscript>
   # <!-- End Piwik Code -->"
-  # Setting[:per_page_code_head] = piwik_tracking_code_head
-  # Setting[:per_page_code_body] = piwik_tracking_code_body
+  # Setting["html.per_page_code_head"] = piwik_tracking_code_head
+  # Setting["html.per_page_code_body"] = piwik_tracking_code_body
 
   Setting.create(key: "homepage.widgets.feeds.proposals", value: "true")
   Setting.create(key: "homepage.widgets.feeds.debates", value: "true")
