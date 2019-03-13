@@ -1,9 +1,11 @@
 class Admin::SettingsController < Admin::BaseController
 
   def index
-    all_settings = Setting.all.group_by { |s| s.type }
-    @settings = all_settings["common"].reject { |setting| hidden_settings.include?(setting.key)}
-    @feature_flags = all_settings["feature"]
+    all_settings = Setting.all.group_by { |setting| setting.type }
+    @configuration_settings = all_settings["configuration"].reject do |setting|
+      hidden_settings.include?(setting.key)
+    end
+    @feature_settings = all_settings["feature"]
   end
 
   def update
