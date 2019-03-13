@@ -74,7 +74,7 @@ Setting["process.budgets"] = true
 Setting["process.legislation"] = true
 
 # Feature flags
-Setting['feature.featured_proposals'] = true
+Setting["feature.featured_proposals"] = nil
 Setting['feature.spending_proposals'] = nil
 Setting['feature.twitter_login'] = true
 Setting['feature.facebook_login'] = true
