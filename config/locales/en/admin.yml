@@ -604,7 +604,6 @@ en:
       activity: Moderator activity
       admin: Admin menu
       banner: Manage banners
-      poll_questions: Questions
       proposals: Proposals
       proposals_topics: Proposals topics
       budgets: Participatory budgets
@@ -657,7 +656,6 @@ en:
             update: "Update Block"
       title_moderated_content: Moderated content
       title_budgets: Budgets
-      title_polls: Polls
       title_profiles: Profiles
       title_settings: Settings
       title_site_customization: Site content
