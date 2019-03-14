@@ -794,7 +794,6 @@ ActiveRecord::Schema.define(version: 20190307165337) do
     t.integer  "legislation_process_id"
     t.text     "title"
     t.text     "description"
-    t.string   "question"
     t.integer  "author_id"
     t.datetime "hidden_at"
     t.integer  "flags_count",                       default: 0
