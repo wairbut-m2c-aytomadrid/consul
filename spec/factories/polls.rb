@@ -90,7 +90,6 @@ FactoryBot.define do
   factory :poll_voter, class: "Poll::Voter" do
     poll
     association :user, :level_two
-    association :officer, factory: :poll_officer
     from_web
 
     trait :from_web do
@@ -106,7 +105,9 @@ FactoryBot.define do
       end
 
       officer_assignment do
-        association :poll_officer_assignment, booth_assignment: booth_assignment, officer: officer
+        association :poll_officer_assignment,
+          booth_assignment: booth_assignment,
+          officer: officer || association(:poll_officer)
       end
     end
 
