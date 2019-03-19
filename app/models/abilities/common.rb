@@ -108,11 +108,6 @@ module Abilities
 
       can [:create, :show], ProposalNotification, proposal: { author_id: user.id }
 
-      if user.forum?
-        can :vote, SpendingProposal
-        can [:create, :destroy], ::BallotLine
-      end
-
       can [:create, :read], Answer
 
       can [:create], Topic

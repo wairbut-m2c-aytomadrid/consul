@@ -576,26 +576,6 @@ feature "Spending proposals" do
 
       end
 
-      scenario "Delegated votes affecting the result" do
-        skip "Deprecated"
-
-        forum = create(:forum)
-        create_list(:user, 30, :level_two, representative: forum)
-        forum.ballot.spending_proposals << @proposal3
-
-        visit participatory_budget_results_path
-
-        expect(page).to have_content @proposal1.title
-        expect(page).to have_content @proposal2.title
-        expect(page).to have_content @proposal3.title
-
-        within("#spending_proposal_#{@proposal1.id}") { expect(page).to have_content "20" }
-        within("#spending_proposal_#{@proposal2.id}") { expect(page).to have_content "60" }
-        within("#spending_proposal_#{@proposal3.id}") { expect(page).to have_content "70" }
-
-        expect(@proposal3.title).to appear_before(@proposal2.title)
-        expect(@proposal2.title).to appear_before(@proposal1.title)
-      end
     end
 
     scenario "Displays only finished feasible spending proposals", :js do

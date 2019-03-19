@@ -33,7 +33,6 @@ es:
         translation: "Traducción actualizada correctamente"
       destroy:
         spending_proposal: "Propuesta de inversión eliminada."
-        representative: "Ya no tienes un representante"
         budget_investment: "Proyecto de gasto eliminado."
         error: "No se pudo borrar"
         topic: "Tema eliminado."

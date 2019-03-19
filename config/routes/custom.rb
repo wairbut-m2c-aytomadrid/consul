@@ -76,10 +76,6 @@ scope '/participatory_budget' do
   end
 end
 
-### Delegation
-resources :forums, only: [:index, :create, :show]
-resources :representatives, only: [:create, :destroy]
-
 ### Human Rights
 resources :human_rights, only: [:index, :show]
 
@@ -172,7 +168,6 @@ get 'presupuestos-participativos-2017-materiales', to: 'pages#show', id: 'landin
 get 'presupuestos-participativos-2018-materiales', to: 'pages#show', id: 'landings/budgets_materials_2018', as: 'budgets_materials_2018'
 get 'como-votar-presupuestos-participativos-2018', to: 'pages#show', id: 'landings/budgets_voting_2018',    as: 'budgets_voting_2018'
 get 'participatory_budget/select_district',        to: 'spending_proposals#select_district', as: 'select_district'
-get 'delegacion',                                  to: 'forums#index', as: 'delegation'
 get 'presupuestos-participativos-resultados',      to: 'spending_proposals#results',                    as: 'participatory_budget_results'
 get 'presupuestos-participativos-estadisticas',    to: 'spending_proposals#stats',                      as: 'participatory_budget_stats'
 get 'presupuestos-participativos-ejecuciones',     to: 'budgets/executions#show',                       as: 'participatory_budget_executions', defaults: {budget_id: '2016'}
@@ -214,7 +209,6 @@ get 'mas-informacion/participacion/hechos',        to: 'pages#show', id: 'help/p
 get 'mas-informacion/participacion/mundo',         to: 'pages#show', id: 'help/participation/world',    as: 'participation_world'
 get 'mas-informacion/derechos-humanos',            to: 'pages#show', id: 'help/participation/ddhh',     as: 'more_info_human_rights'
 get 'mas-informacion/gobierno-abierto',            to: 'pages#show', id: 'help/participation/open',     as: 'participation_open_government'
-get 'mas-informacion/foros-locales',               to: 'pages#show', id: 'help/participation/forums',   as: 'participation_forums'
 get 'mas-informacion/kit-decide',                  to: 'pages#show', id: 'help/kit_decide/index',       as: 'kit_decide'
 
 # Once plazas results & stats

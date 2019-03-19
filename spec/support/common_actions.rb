@@ -148,14 +148,6 @@ module CommonActions
       create(:ballot, spending_proposals: [sp], user: user)
     end
   end
-
-  def create_delegation_for(*users)
-    forum = create(:forum)
-    users.each do |user|
-      user.update(representative: forum)
-    end
-  end
-
   def first_or_create_spending_spending_proposal
     if SpendingProposal.any?
       return SpendingProposal.first

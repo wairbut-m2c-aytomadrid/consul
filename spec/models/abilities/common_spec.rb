@@ -416,25 +416,6 @@ describe Abilities::Common do
     end
   end
 
-  describe "when forum" do
-    let!(:forum) { create(:forum, user: user) }
-    let(:spending_proposal) { create(:spending_proposal) }
-    let(:own_spending_proposal) { create(:spending_proposal, author: user) }
-
-    it { should_not be_able_to(:vote, Proposal) }
-    it { should_not be_able_to(:vote_featured, Proposal) }
-
-    it { should_not be_able_to(:create, SpendingProposal) }
-
-    it { should be_able_to(:vote, SpendingProposal) }
-
-    it { should be_able_to(:create, BallotLine) }
-    it { should be_able_to(:destroy, BallotLine) }
-
-    it { should_not be_able_to(:destroy, spending_proposal) }
-    it { should_not be_able_to(:destroy, own_spending_proposal) }
-  end
-
   describe "#disable_recommendations" do
     it { should be_able_to(:disable_recommendations, Debate) }
     it { should be_able_to(:disable_recommendations, Proposal) }

@@ -19,7 +19,6 @@ class User < ApplicationRecord
   has_one :manager
   has_one :poll_officer, class_name: "Poll::Officer"
   has_one :organization
-  has_one :forum
   has_one :lock
   has_one :ballot
   has_many :flags
@@ -37,7 +36,6 @@ class User < ApplicationRecord
   has_many :legislation_answers, class_name: 'Legislation::Answer', dependent: :destroy, inverse_of: :user
   has_many :follows
   belongs_to :geozone
-  belongs_to :representative, class_name: "Forum"
 
   validates :username, presence: true, if: :username_required?
   validates :username, uniqueness: { scope: :registering_with_oauth }, if: :username_required?
@@ -59,7 +57,6 @@ class User < ApplicationRecord
   scope :administrators, -> { joins(:administrator) }
   scope :moderators,     -> { joins(:moderator) }
   scope :organizations,  -> { joins(:organization) }
-  scope :forums,         -> { joins(:forum) }
   scope :officials,      -> { where("official_level > 0") }
   scope :male,           -> { where(gender: "male") }
   scope :female,         -> { where(gender: "female") }
@@ -186,18 +183,6 @@ class User < ApplicationRecord
 
   def organization?
     organization.present?
-  end
-
-  def forum?
-    forum.present?
-  end
-
-  def has_representative?
-    representative.present?
-  end
-
-  def pending_delegation_alert?
-    has_representative? && accepted_delegation_alert == false
   end
 
   def verified_organization?

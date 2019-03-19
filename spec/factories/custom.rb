@@ -15,15 +15,6 @@ FactoryBot.define do
     data "1,2,3"
   end
 
-  factory :forum do
-    sequence(:name) { |n| "Forum #{n}" }
-    user
-  end
-
-  factory :represented_user, parent: :user, traits: [:level_three] do
-    association :representative, factory: :forum
-  end
-
   factory :ballot do
     user
   end
