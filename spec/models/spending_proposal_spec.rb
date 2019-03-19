@@ -192,98 +192,7 @@ describe SpendingProposal do
     end
   end
 
-  describe "by_valuator" do
-    it "should return spending proposals assigned to specific valuator" do
-      spending_proposal1 = create(:spending_proposal)
-      spending_proposal2 = create(:spending_proposal)
-      spending_proposal3 = create(:spending_proposal)
-
-      valuator1 = create(:valuator)
-      valuator2 = create(:valuator)
-
-      spending_proposal1.valuators << valuator1
-      spending_proposal2.valuators << valuator2
-      spending_proposal3.valuators << [valuator1, valuator2]
-
-      by_valuator = SpendingProposal.by_valuator(valuator1.id)
-
-      expect(by_valuator.size).to eq(2)
-      expect(by_valuator.sort).to eq([spending_proposal1, spending_proposal3].sort)
-    end
-  end
-
   describe "scopes" do
-    describe "valuation_open" do
-      it "should return all spending proposals with false valuation_finished" do
-        spending_proposal1 = create(:spending_proposal, valuation_finished: true)
-        spending_proposal2 = create(:spending_proposal)
-
-        valuation_open = SpendingProposal.valuation_open
-
-        expect(valuation_open.size).to eq(1)
-        expect(valuation_open.first).to eq(spending_proposal2)
-      end
-    end
-
-    describe "without_admin" do
-      it "should return all open spending proposals without assigned admin" do
-        spending_proposal1 = create(:spending_proposal, valuation_finished: true)
-        spending_proposal2 = create(:spending_proposal, administrator: create(:administrator))
-        spending_proposal3 = create(:spending_proposal)
-
-        without_admin = SpendingProposal.without_admin
-
-        expect(without_admin.size).to eq(1)
-        expect(without_admin.first).to eq(spending_proposal3)
-      end
-    end
-
-    describe "managed" do
-      it "should return all open spending proposals with assigned admin but without assigned valuators" do
-        spending_proposal1 = create(:spending_proposal, administrator: create(:administrator))
-        spending_proposal2 = create(:spending_proposal, administrator: create(:administrator), valuation_finished: true)
-        spending_proposal3 = create(:spending_proposal, administrator: create(:administrator))
-        spending_proposal1.valuators << create(:valuator)
-
-        managed = SpendingProposal.managed
-
-        expect(managed.size).to eq(1)
-        expect(managed.first).to eq(spending_proposal3)
-      end
-    end
-
-    describe "valuating" do
-      it "should return all spending proposals with assigned valuator but valuation not finished" do
-        spending_proposal1 = create(:spending_proposal)
-        spending_proposal2 = create(:spending_proposal)
-        spending_proposal3 = create(:spending_proposal, valuation_finished: true)
-
-        spending_proposal2.valuators << create(:valuator)
-        spending_proposal3.valuators << create(:valuator)
-
-        valuating = SpendingProposal.valuating
-
-        expect(valuating.size).to eq(1)
-        expect(valuating.first).to eq(spending_proposal2)
-      end
-    end
-
-    describe "valuation_finished" do
-      it "should return all spending proposals with valuation finished" do
-        spending_proposal1 = create(:spending_proposal)
-        spending_proposal2 = create(:spending_proposal)
-        spending_proposal3 = create(:spending_proposal, valuation_finished: true)
-
-        spending_proposal2.valuators << create(:valuator)
-        spending_proposal3.valuators << create(:valuator)
-
-        valuation_finished = SpendingProposal.valuation_finished
-
-        expect(valuation_finished.size).to eq(1)
-        expect(valuation_finished.first).to eq(spending_proposal3)
-      end
-    end
-
     describe "feasible" do
       it "should return all feasible spending proposals" do
         feasible_spending_proposal = create(:spending_proposal, feasible: true)
@@ -370,6 +279,11 @@ describe SpendingProposal do
         user.city_wide_spending_proposals_supported_count = 0
         expect(city_sp.reason_for_not_being_votable_by(user)).to eq(:no_city_supports_available)
       end
+
+    describe "#sort_by_delegated_ballots_and_price" do
+      let(:sp1) { create(:spending_proposal, ballot_lines_count: 5, price: 10) }
+      let(:sp2) { create(:spending_proposal, ballot_lines_count: 5, price: 20) }
+      let(:sp3) { create(:spending_proposal, ballot_lines_count: 7, price: 30) }
 
       it "rejects district wide votes if no votes left for the user"  do
         user.district_wide_spending_proposals_supported_count = 0

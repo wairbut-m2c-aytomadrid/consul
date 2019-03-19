@@ -72,31 +72,6 @@ describe Abilities::Administrator do
   it { should be_able_to(:comment_as_administrator, legislation_question) }
   it { should_not be_able_to(:comment_as_moderator, legislation_question) }
 
-  it { should be_able_to(:read, SpendingProposal) }
-  it { should be_able_to(:edit, SpendingProposal) }
-  it { should be_able_to(:update, SpendingProposal) }
-  it { should be_able_to(:summary, SpendingProposal) }
-
-  describe "valuation open" do
-
-    before(:each) do
-      Setting["feature.spending_proposal_features.valuation_allowed"] = true
-    end
-
-    it { should be_able_to(:destroy, SpendingProposal) }
-  end
-
-  describe "valuation finished" do
-
-    before(:each) do
-      Setting["feature.spending_proposal_features.valuation_allowed"] = nil
-    end
-
-    it { should_not be_able_to(:destroy, SpendingProposal) }
-  end
-
-  it { should be_able_to(:valuate, SpendingProposal) }
-
   it { should be_able_to(:create, Budget) }
   it { should be_able_to(:update, Budget) }
   it { should be_able_to(:read_results, Budget) }

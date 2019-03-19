@@ -57,13 +57,6 @@ module Abilities
       can [:search, :create, :index, :destroy], ::Manager
       can [:search, :index], ::User
 
-      can [:read, :stats, :results, :summary, :edit, :update], SpendingProposal
-
-      if Setting['feature.spending_proposal_features.valuation_allowed'].present?
-        can [:update, :destroy], SpendingProposal
-      end
-
-      can [:read, :valuate, :summary], SpendingProposal
       can [:index, :read, :new, :create, :update, :destroy, :calculate_winners], Budget
       can [:read, :create, :update, :destroy], Budget::Group
       can [:read, :create, :update, :destroy], Budget::Heading

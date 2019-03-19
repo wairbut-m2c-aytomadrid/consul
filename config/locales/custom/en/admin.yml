@@ -54,11 +54,6 @@ en:
         user_invites: Invitations
         external_stats: External stats
         incomplete_verifications: Incomplete verifications
-        summary:
-          ballot_line_votes: Votes in investment projects
-          ballot_votes: Budgets voted
-          spending_proposal_votes: Investment project votes
-          spending_proposals: Investment projects
       graph:
         debate_created: Debates
         spending_proposals: Investment projects

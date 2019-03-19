@@ -14,16 +14,6 @@ namespace :admin do
     get :user_invites, on: :collection
     get :polls, on: :collection
   end
-
-  resources :spending_proposals, only: [:index, :show, :edit, :update] do
-    member do
-      patch :assign_admin
-      patch :assign_valuators
-    end
-
-    get :summary, on: :collection
-    get :results, on: :collection
-  end
 end
 
 ### Budgets

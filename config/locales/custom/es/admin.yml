@@ -54,11 +54,6 @@ es:
         user_invites: Invitaciones Linea Madrid
         external_stats: Estadísticas externas
         incomplete_verifications: Verificaciones incompletas
-        summary:
-          ballot_line_votes: Votos en inversión
-          ballot_votes: Presupuestos votados
-          spending_proposal_votes: Votos Propuesta Inversión
-          spending_proposals: Propuestas de inversión
       graph:
         debate_created: Debates
         spending_proposals: Propuestas de inversión

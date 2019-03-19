@@ -100,7 +100,6 @@ Setting["feature.spending_proposal_features.phase2"] = nil
 Setting["feature.spending_proposal_features.phase3"] = nil
 Setting["feature.spending_proposal_features.voting_allowed"] = nil
 Setting["feature.spending_proposal_features.open_results_page"] = nil
-Setting["feature.spending_proposal_features.valuation_allowed"] = nil
 
 # Proposal notifications
 Setting["proposal_notification_minimum_interval_in_days"] = 3
