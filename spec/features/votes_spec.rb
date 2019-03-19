@@ -371,13 +371,11 @@ feature "Votes" do
   feature "Spending Proposals" do
     background do
      Setting["feature.spending_proposals"] = true
-     Setting["feature.spending_proposal_features.voting_allowed"] = true
      login_as(@manuela)
     end
 
     after do
       Setting["feature.spending_proposals"] = nil
-      Setting["feature.spending_proposal_features.voting_allowed"] = nil
     end
 
     context "Verified User" do
@@ -460,23 +458,5 @@ feature "Votes" do
 
     end
 
-    xscenario "Disable voting on spending proposals", :js do
-      login_as(@manuela)
-      Setting["feature.spending_proposal_features.voting_allowed"] = nil
-      spending_proposal = create(:spending_proposal)
-
-      visit spending_proposals_path
-
-      within("#spending_proposal_#{spending_proposal.id}") do
-        find("div.supports").hover
-        expect_message_voting_not_allowed
-      end
-
-      visit spending_proposal_path(spending_proposal)
-
-      within("#spending_proposal_#{spending_proposal.id}") do
-        find("div.supports").hover
-        expect_message_voting_not_allowed
-      end
     end
 end

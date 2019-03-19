@@ -167,18 +167,6 @@ describe Abilities::Common do
       it { should be_able_to(:vote_featured, Proposal) }
     end
 
-    describe "final voting allowed" do
-      before { Setting["feature.spending_proposal_features.final_voting_allowed"] = true }
-      it { should be_able_to(:create, BallotLine) }
-      it { should be_able_to(:destroy, BallotLine) }
-    end
-
-    describe "final voting not allowed" do
-      before { Setting["feature.spending_proposal_features.final_voting_allowed"] = false }
-      it { should_not be_able_to(:create, BallotLine) }
-      it { should_not be_able_to(:destroy, BallotLine) }
-    end
-
     it { should_not be_able_to(:destroy, spending_proposal) }
     it { should_not be_able_to(:destroy, own_spending_proposal) }
 
@@ -260,18 +248,6 @@ describe Abilities::Common do
       describe "Proposal" do
         it { should_not be_able_to(:vote, Proposal) }
         it { should_not be_able_to(:vote_featured, Proposal) }
-      end
-
-      describe "final voting allowed" do
-        before { Setting["feature.spending_proposal_features.final_voting_allowed"] = true }
-        it { should_not be_able_to(:create, BallotLine) }
-        it { should_not be_able_to(:destroy, BallotLine) }
-      end
-
-      describe "final voting not allowed" do
-        before { Setting["feature.spending_proposal_features.final_voting_allowed"] = false }
-        it { should_not be_able_to(:create, BallotLine) }
-        it { should_not be_able_to(:destroy, BallotLine) }
       end
 
       it { should_not be_able_to(:destroy, spending_proposal) }

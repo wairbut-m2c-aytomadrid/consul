@@ -217,23 +217,6 @@ es:
       results_link: Resultados
       stats_link: "Estadísticas de participación"
       executions_link: "Seguimiento"
-  ballots:
-    show:
-      city_link: Votar para toda la ciudad
-      city_wide: Toda la ciudad
-      districts_link: Votar propuestas de distrito
-      district_wide: Distrito
-      title: Mis votos
-      amount_spent: Coste total
-      remaining_city_html: "Te quedan <span>%{amount_city}</span> para invertir en toda la ciudad."
-      remaining_district_html: "Te quedan <span>%{amount_district}</span> para invertir en <span>%{geozone}</span>."
-      remove: Quitar voto
-      social_share: He decidido dónde quiero que se inviertan %{amount} para %{geozone}. ¡Participa!
-      voted_html:
-        one: "Has votado <span>una</span> propuesta."
-        other: "Has votado <span>%{count}</span> propuestas."
-      voted_info_html: "Puedes cambiar tus votos en cualquier momento hasta el cierre de esta fase.<br> No hace falta que gastes todo el dinero disponible."
-      zero: "Todavía no has votado ninguna propuesta de inversión."
   social:
     blog: "%{org} Blog"
     blog_link: "Blog"

@@ -219,23 +219,6 @@ en:
       text_long_results_html: "Madrid has reserved <strong>60 million euros</strong> for investments assigned to the next year budget for the people to decide what to do with them. Citizens have created proposals and voted. Madrid government will assume the results and include them in the city's budget for 2017."
       unfeasible_link: See unfeasible investment projects
       see_results: See results
-  ballots:
-    show:
-      city_link: Vote city proposals
-      city_wide: City Wide
-      districts_link: Vote district proposals
-      district_wide: District Wide
-      title: Your ballot
-      amount_spent: Amount spent
-      remaining_city_html: "You are <span>%{amount_city}</span> to invest citywide."
-      remaining_district_html: "You are <span>%{amount_district}</span> to invest on <span>%{geozone}</span>."
-      remove: Remove vote
-      social_share: I've decided where to invest %{amount} for %{geozone}
-      voted_html:
-        one: "You voted <span>one</span> proposal."
-        other: "You voted <span>%{count}</span> proposals."
-      voted_info_html: "You can change your vote at any time until the close of this phase.<br> No need to spend all the money available."
-      zero: You have not voted any investment project.
   social:
     blog: "Blog de %{org}"
     blog_link: "Blog"

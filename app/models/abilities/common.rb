@@ -87,12 +87,6 @@ module Abilities
 
           can [:show, :create], Budget::Ballot,          budget: { phase: "balloting" }
           can [:create, :destroy], Budget::Ballot::Line, budget: { phase: "balloting" }
-          # This line must happen after Budget::Ballot is used (in the previous lines);
-          # otherwise Rails autoloader gets confused in Dev
-          can :show, ::Ballot
-          if Setting["feature.spending_proposal_features.final_voting_allowed"].present?
-            can [:create, :destroy], ::BallotLine
-          end
           can :vote, Budget::Investment,                 budget: { phase: "selecting" }
           can [:show, :create], Budget::Ballot,          budget: { phase: "balloting" }
           can [:create, :destroy], Budget::Ballot::Line, budget: { phase: "balloting" }

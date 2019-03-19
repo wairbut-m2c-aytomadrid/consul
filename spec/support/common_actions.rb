@@ -142,11 +142,6 @@ module CommonActions
     end
   end
 
-  def create_ballot_for(*users)
-    sp = first_or_create_spending_spending_proposal
-    users.each do |user|
-      create(:ballot, spending_proposals: [sp], user: user)
-    end
   end
   def first_or_create_spending_spending_proposal
     if SpendingProposal.any?
@@ -163,13 +158,6 @@ module CommonActions
     click_button "Send invitations"
 
     expect(page).to have_content "3 invitations have been sent."
-  end
-
-  def add_spending_proposal_to_ballot(spending_proposal)
-    within("#spending_proposal_#{spending_proposal.id}") do
-      find(".add a").click
-      expect(page).to have_content "Remove"
-    end
   end
 
   def csv_path_for(table)
