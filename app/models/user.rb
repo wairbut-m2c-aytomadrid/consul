@@ -28,7 +28,6 @@ class User < ApplicationRecord
   has_many :budget_investments, -> { with_hidden }, foreign_key: :author_id, class_name: 'Budget::Investment'
   has_many :budget_recommendations, class_name: 'Budget::Recommendation'
   has_many :comments, -> { with_hidden }
-  has_many :spending_proposals, foreign_key: :author_id
   has_many :failed_census_calls
   has_many :notifications
   has_many :direct_messages_sent,     class_name: 'DirectMessage', foreign_key: :sender_id
@@ -121,11 +120,6 @@ class User < ApplicationRecord
 
   def legislation_proposal_votes(proposals)
     voted = votes.for_legislation_proposals(proposals)
-    voted.each_with_object({}) { |v, h| h[v.votable_id] = v.value }
-  end
-
-  def spending_proposal_votes(spending_proposals)
-    voted = votes.for_spending_proposals(spending_proposals)
     voted.each_with_object({}) { |v, h| h[v.votable_id] = v.value }
   end
 
@@ -336,12 +330,6 @@ class User < ApplicationRecord
       save(validate: false)
     end
     true
-  end
-
-  def supported_spending_proposals_geozone
-    if supported_spending_proposals_geozone_id.present?
-      Geozone.find(supported_spending_proposals_geozone_id)
-    end
   end
 
   def ability

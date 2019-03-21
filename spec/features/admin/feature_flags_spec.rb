@@ -3,7 +3,7 @@ require "rails_helper"
 feature "Admin feature flags" do
 
   background do
-    Setting["feature.spending_proposals"] = true
+    Setting["process.budgets"] = true
     login_as(create(:administrator).user)
   end
 

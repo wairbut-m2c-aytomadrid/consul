@@ -22,7 +22,7 @@ describe Abilities::Administrator do
   let(:poll_question_document) { build(:document, documentable: poll_question) }
 
   let(:probe_option) { create(:probe_option) }
-  let(:spending_proposal) { create(:spending_proposal) }
+
   let(:proposal_image) { build(:image, imageable: proposal, user: proposal.author) }
   let(:budget_investment_image) { build(:image, imageable: budget_investment) }
 
@@ -65,9 +65,6 @@ describe Abilities::Administrator do
 
   it { should be_able_to(:comment_as_administrator, probe_option) }
   it { should_not be_able_to(:comment_as_moderator, probe_option) }
-
-  it { should be_able_to(:comment_as_administrator, spending_proposal) }
-  it { should_not be_able_to(:comment_as_moderator, spending_proposal) }
 
   it { should be_able_to(:comment_as_administrator, legislation_question) }
   it { should_not be_able_to(:comment_as_moderator, legislation_question) }

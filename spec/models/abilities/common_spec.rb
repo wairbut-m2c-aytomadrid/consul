@@ -73,11 +73,6 @@ describe Abilities::Common do
   it { should_not be_able_to(:vote, Proposal) }
   it { should_not be_able_to(:vote_featured, Proposal) }
 
-  it { should     be_able_to(:index, SpendingProposal)   }
-  it { should_not be_able_to(:create, SpendingProposal)  }
-  it { should_not be_able_to(:destroy, SpendingProposal) }
-  it { should_not be_able_to(:vote, SpendingProposal) }
-
   it { should_not be_able_to(:comment_as_administrator, debate)   }
   it { should_not be_able_to(:comment_as_moderator, debate)       }
 
@@ -156,8 +151,6 @@ describe Abilities::Common do
   end
 
   describe "when level 2 verified" do
-    let(:spending_proposal) { create(:spending_proposal) }
-    let(:own_spending_proposal) { create(:spending_proposal, author: user) }
     let(:own_direct_message) { create(:direct_message, sender: user) }
 
     before{ user.update(residence_verified_at: Time.current, confirmed_phone: "1", date_of_birth: 20.years.ago) }
@@ -167,18 +160,9 @@ describe Abilities::Common do
       it { should be_able_to(:vote_featured, Proposal) }
     end
 
-    it { should_not be_able_to(:destroy, spending_proposal) }
-    it { should_not be_able_to(:destroy, own_spending_proposal) }
-
     it { should be_able_to(:create, investment_in_accepting_budget) }
     it { should_not be_able_to(:create, investment_in_selecting_budget) }
     it { should_not be_able_to(:create, investment_in_balloting_budget) }
-
-    describe "Spending Proposal" do
-      it { should be_able_to(:create, SpendingProposal)                }
-      it { should_not be_able_to(:destroy, create(:spending_proposal)) }
-      it { should_not be_able_to(:destroy, own_spending_proposal)      }
-    end
 
     describe "Direct Message" do
       it { should     be_able_to(:new,    DirectMessage)           }
@@ -250,18 +234,9 @@ describe Abilities::Common do
         it { should_not be_able_to(:vote_featured, Proposal) }
       end
 
-      it { should_not be_able_to(:destroy, spending_proposal) }
-      it { should_not be_able_to(:destroy, own_spending_proposal) }
-
       it { should be_able_to(:create, investment_in_accepting_budget) }
       it { should_not be_able_to(:create, investment_in_selecting_budget) }
       it { should_not be_able_to(:create, investment_in_balloting_budget) }
-
-      describe "Spending Proposal" do
-        it { should be_able_to(:create, SpendingProposal)                }
-        it { should_not be_able_to(:destroy, create(:spending_proposal)) }
-        it { should_not be_able_to(:destroy, own_spending_proposal)      }
-      end
 
       describe "Direct Message" do
         it { should     be_able_to(:new,    DirectMessage)           }
@@ -313,18 +288,12 @@ describe Abilities::Common do
   end # level 2 verified
 
   describe "when level 3 verified" do
-    let(:spending_proposal) { create(:spending_proposal) }
-    let(:own_spending_proposal) { create(:spending_proposal, author: user) }
     let(:own_direct_message) { create(:direct_message, sender: user) }
 
     before{ user.update(verified_at: Time.current, date_of_birth: 20.years.ago) }
 
     it { should be_able_to(:vote, Proposal)          }
     it { should be_able_to(:vote_featured, Proposal) }
-
-    it { should     be_able_to(:create, SpendingProposal) }
-    it { should_not be_able_to(:destroy, create(:spending_proposal)) }
-    it { should_not be_able_to(:destroy, own_spending_proposal)      }
 
     it { should     be_able_to(:new, DirectMessage)            }
     it { should     be_able_to(:create, DirectMessage)         }
@@ -358,10 +327,6 @@ describe Abilities::Common do
 
       it { should_not be_able_to(:vote, Proposal)          }
       it { should_not be_able_to(:vote_featured, Proposal) }
-
-      it { should     be_able_to(:create, SpendingProposal)                }
-      it { should_not be_able_to(:destroy, create(:spending_proposal)) }
-      it { should_not be_able_to(:destroy, own_spending_proposal)      }
 
       it { should     be_able_to(:new, DirectMessage)            }
       it { should     be_able_to(:create, DirectMessage)         }

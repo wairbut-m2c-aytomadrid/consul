@@ -1517,8 +1517,6 @@ feature "Budget Investments" do
       sp2 = create(:budget_investment, :selected, heading: heading, price: 20000)
 
       login_as(user)
-      # visit budget_path(budget)
-      # click_link "Health"
       visit root_path
 
       first(:link, "Participatory budgeting").click
@@ -1815,41 +1813,6 @@ feature "Budget Investments" do
       expect(page).not_to have_content investment2.title
     end
 
-  end
-
-  context "Spending Proposal url redirection to associated Budget Investment" do
-    before do
-      create(:spending_proposal, id: 9999, title: "Le Spending Proposal")
-      create(:budget_investment, id: 8888, title: "Budget Investment child",
-                                 original_spending_proposal_id: 9999,
-                                 budget: create(:budget, slug: "spending-proposals-budget"))
-      create(:budget_investment, id: 9999, title: "Investment with same Spending ID Proposal",
-                                 budget: create(:budget, slug: "new-budget"))
-    end
-
-    scenario "Old Spending Proposal url redirects migrated Investment url with its ID" do
-      visit "/participatory_budget/investment_projects/9999"
-
-      expect(page).to have_current_path("/presupuestos/spending-proposals-budget/proyecto/9999?spending=true")
-      expect(page).to have_content("Investment project code: 9999")
-      expect(page).to have_content("Budget Investment child")
-    end
-
-    scenario "Visit Investment migrated from Spending Proposal shows migrated Investment" do
-      visit "/presupuestos/spending-proposals-budget/proyecto/8888"
-
-      expect(page).to have_current_path("/presupuestos/spending-proposals-budget/proyecto/8888")
-      expect(page).to have_content("Investment project code: 9999")
-      expect(page).to have_content("Budget Investment child")
-    end
-
-    scenario "Visit Investment with same ID as migrated Spending Proposal shows that Investment" do
-      visit "/presupuestos/new-budget/proyecto/9999"
-
-      expect(page).to have_current_path("/presupuestos/new-budget/proyecto/9999")
-      expect(page).to have_content("Investment project code: 9999")
-      expect(page).to have_content("Investment with same Spending ID Proposal")
-    end
   end
 
   context "Wrong budget investment URL" do
