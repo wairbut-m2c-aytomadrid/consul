@@ -15,7 +15,7 @@ feature "Stats" do
       2.times { create(:proposal) }
       3.times { create(:comment, commentable: Debate.first) }
       4.times { create(:visit) }
-      6.times { create(:spending_proposal) }
+      6.times { create(:budget_investment) }
 
       visit admin_stats_path
 
