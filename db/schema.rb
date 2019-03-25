@@ -183,11 +183,10 @@ ActiveRecord::Schema.define(version: 20190411090023) do
 
   create_table "budget_headings", force: :cascade do |t|
     t.integer "group_id"
-    t.string  "name",                 limit: 50
     t.bigint  "price"
     t.string  "slug"
     t.integer "population"
-    t.boolean "allow_custom_content",            default: false
+    t.boolean "allow_custom_content", default: false
     t.text    "latitude"
     t.text    "longitude"
     t.index ["group_id"], name: "index_budget_headings_on_group_id", using: :btree
