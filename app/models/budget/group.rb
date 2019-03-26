@@ -31,7 +31,7 @@ class Budget
     validates :max_supportable_headings, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
     scope :by_slug, ->(slug) { where(slug: slug) }
-    scope :sort_by_name, -> { includes(:translations).order(:name) }
+    scope :sort_by_name, -> { joins(:translations).order(:name) }
 
     before_save :strip_name
 
