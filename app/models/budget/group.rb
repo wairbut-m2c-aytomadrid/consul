@@ -8,6 +8,7 @@ class Budget
 
     class Translation
       validate :name_uniqueness_by_budget
+      before_save :strip_name
 
       def name_uniqueness_by_budget
         if budget.groups.joins(:translations)
@@ -16,6 +17,12 @@ class Budget
           errors.add(:name, I18n.t("errors.messages.taken"))
         end
       end
+
+      private
+
+        def strip_name
+          name.strip!
+        end
     end
 
     belongs_to :budget
@@ -33,8 +40,6 @@ class Budget
     scope :by_slug, ->(slug) { where(slug: slug) }
     scope :sort_by_name, -> { joins(:translations).order(:name) }
 
-    before_save :strip_name
-
     def to_param
       slug
     end
@@ -47,10 +52,6 @@ class Budget
 
     def generate_slug?
       slug.nil? || budget.drafting?
-    end
-
-    def strip_name
-      name.strip!
     end
   end
 end
