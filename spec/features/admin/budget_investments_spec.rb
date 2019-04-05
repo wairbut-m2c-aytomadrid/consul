@@ -1577,8 +1577,7 @@ feature "Admin budget investments" do
       visit admin_budget_budget_investments_path(budget)
 
       within("#budget_investment_#{associated_budget_investment.id}") do
-        expect(page).to have_link("Budget Investment child",
-                                  href: spending_proposal_migrated_to_budget_investment_path)
+        expect(page).to have_link("Budget Investment child")
       end
     end
 
