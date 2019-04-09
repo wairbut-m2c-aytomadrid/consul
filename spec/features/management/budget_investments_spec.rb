@@ -3,7 +3,7 @@ require "rails_helper"
 feature "Budget Investments" do
 
   let(:manager) { create(:manager) }
-  let(:budget)  { create(:budget, phase: "selecting", name: "2033") }
+  let(:budget)  { create(:budget, phase: "selecting", name: "2033", slug: "budget_slug") }
   let(:group)   { create(:budget_group, budget: budget, name: "Whole city") }
   let(:heading) { create(:budget_heading, group: group, name: "Health") }
 
@@ -20,7 +20,6 @@ feature "Budget Investments" do
 
   context "Load" do
 
-    let(:budget)     { create(:budget, slug: "budget_slug") }
     let(:investment) { create(:budget_investment, budget: budget) }
     let(:user)       { create(:user, :level_two) }
 
