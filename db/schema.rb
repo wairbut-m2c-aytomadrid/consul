@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190408133956) do
+ActiveRecord::Schema.define(version: 20190411090023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -915,7 +915,6 @@ ActiveRecord::Schema.define(version: 20190408133956) do
   create_table "links", force: :cascade do |t|
     t.string   "label"
     t.string   "url"
-    t.boolean  "open_in_new_tab"
     t.integer  "linkable_id"
     t.string   "linkable_type"
     t.datetime "created_at",      null: false
