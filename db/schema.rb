@@ -917,8 +917,8 @@ ActiveRecord::Schema.define(version: 20190411090023) do
     t.string   "url"
     t.integer  "linkable_id"
     t.string   "linkable_type"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   add_index "links", ["linkable_type", "linkable_id"], name: "index_links_on_linkable_type_and_linkable_id", using: :btree
