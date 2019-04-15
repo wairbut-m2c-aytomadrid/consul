@@ -39,9 +39,10 @@ every 1.day, at: '4:00 am', roles: [:cron] do
   rake "csv:export"
 end
 
-every 1.day, at: "7:00 am" do
-  rake "dashboards:send_notifications"
-end
+# Temporally not send dashboard's notifications
+# every 1.day, at: "7:00 am" do
+#   rake "dashboards:send_notifications"
+# end
 
 every 1.day, at: "3:00 am", roles: [:cron] do
   rake "votes:reset_hot_score"
