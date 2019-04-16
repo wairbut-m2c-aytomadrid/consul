@@ -12,7 +12,13 @@
 <% end %>
 
 <main>
-  <% if @search_terms || @advanced_search_terms || @tag_filter || params[:retired].present? %>
+  <% if [
+          @search_terms,
+          @advanced_search_terms,
+          @tag_filter,
+          params[:retired].present?,
+          params[:selected].present?
+        ].any? %>
     <div class="highlight no-margin-top padding margin-bottom">
       <div class="row">
         <div class="small-12 column">
@@ -32,6 +38,8 @@
             </p>
           <% elsif params[:retired].present? %>
             <h2><%= t("proposals.index.retired_proposals") %></h2>
+          <% elsif params[:selected].present? %>
+            <h2><%= t("proposals.index.selected_proposals") %></h2>
           <% end %>
         </div>
       </div>
@@ -78,7 +86,7 @@
         </div>
       <% end %>
 
-      <% unless params[:retired].present? %>
+      <% unless params[:retired].present? || params[:selected].present? %>
         <%= render "shared/advanced_search",
                    search_path: path_to_search_proposals  %>
       <% end %>
@@ -150,6 +158,7 @@
           <%= render "popular" %>
         <% end %>
         <%= render "retired" %>
+        <%= render "selected" %>
       </aside>
     </div>
 
