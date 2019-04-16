@@ -59,6 +59,7 @@ class ProposalsController < ApplicationController
     load_selected
     hide_advanced_search if custom_search?
     load_featured
+    remove_archived_from_order_links
   end
 
   def vote
@@ -180,6 +181,10 @@ class ProposalsController < ApplicationController
           @resources = @resources.where("proposals.id NOT IN (?)", @featured_proposals.map(&:id))
         end
       end
+    end
+
+    def remove_archived_from_order_links
+      @valid_orders.delete("archival_date")
     end
 
     def set_view

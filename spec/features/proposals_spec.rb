@@ -963,12 +963,12 @@ describe "Proposals" do
 
   describe "Archived proposals" do
 
-    scenario "show on archived tab" do
+    scenario "show on proposals list" do
       create_featured_proposals
       archived_proposals = create_archived_proposals
 
       visit proposals_path
-      click_link "archived"
+      click_link "Archived proposals"
 
       within("#proposals-list") do
         archived_proposals.each do |proposal|
@@ -1036,7 +1036,7 @@ describe "Proposals" do
         expect(page).not_to have_content(archived_proposal.title)
       end
 
-      click_link "archived"
+      click_link "Archived proposals"
 
       within("#featured-proposals") do
         expect(page).to have_content(featured_proposal.title)
@@ -1054,7 +1054,7 @@ describe "Proposals" do
       create(:proposal, :archived, title: "Some votes").update_column(:confidence_score, 25)
 
       visit proposals_path
-      click_link "archived"
+      click_link "Archived proposals"
 
       within("#proposals-list") do
         expect(all(".proposal")[0].text).to match "Most voted"
