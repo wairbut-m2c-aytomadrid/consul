@@ -140,6 +140,7 @@ end
 get 'procesos',  to: 'legislation/processes#index', as: 'processes'
 get "vota/stats_2018", to: "polls#stats_2018", as: 'poll_stats_2018'
 get "vota/results_2018", to: "polls#results_2018", as: 'poll_results_2018'
+get "proposals/:proposal_id/polls/:id", to: "polls#show", as: 'proposal_poll'
 
 resources :polls, only: [:show, :index], path: 'vota' do
   member do
