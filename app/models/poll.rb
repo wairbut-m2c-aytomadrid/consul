@@ -1,4 +1,5 @@
 class Poll < ActiveRecord::Base
+  require_dependency "poll/answer"
 
   AGE_STEPS = [16,20,25,30,35,40,45,50,55,60,65]
 
