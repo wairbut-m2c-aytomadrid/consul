@@ -38,8 +38,6 @@ module Abilities
 
       can [:retire_form, :retire], Proposal, author_id: user.id
 
-      can [:read, :welcome], SpendingProposal
-
       can :read, Legislation::Proposal
       cannot [:edit, :update], Legislation::Proposal do |proposal|
         proposal.editable_by?(user)
@@ -87,8 +85,6 @@ module Abilities
       end
 
       if user.level_two_or_three_verified?
-        can :create, SpendingProposal
-
         can :vote, Legislation::Proposal
         can :vote_featured, Legislation::Proposal
         can :create, Legislation::Answer
@@ -107,16 +103,10 @@ module Abilities
           end
           can :newsletter_vote, Proposal
           can :vote_featured, Proposal
-          can :vote, SpendingProposal
 
           can [:show, :create], Budget::Ballot,          budget: { phase: "balloting" }
           can [:create, :destroy], Budget::Ballot::Line, budget: { phase: "balloting" }
-          # This line must happen after Budget::Ballot is used (in the previous lines);
-          # otherwise Rails autoloader gets confused in Dev
-          can :show, ::Ballot
-          if Setting["feature.spending_proposal_features.final_voting_allowed"].present?
-            can [:create, :destroy], ::BallotLine
-          end
+
           can :vote, Budget::Investment,                 budget: { phase: "selecting" }
           can [:show, :create], Budget::Ballot,          budget: { phase: "balloting" }
           can [:create, :destroy], Budget::Ballot::Line, budget: { phase: "balloting" }
@@ -131,11 +121,6 @@ module Abilities
       end
 
       can [:create, :show], ProposalNotification, proposal: { author_id: user.id }
-
-      if user.forum?
-        can :vote, SpendingProposal
-        can [:create, :destroy], ::BallotLine
-      end
 
       can [:create, :read], Answer
 

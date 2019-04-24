@@ -92,10 +92,6 @@ module ActsAsTaggableOn
       Tag.category.pluck(:name)
     end
 
-    def self.spending_proposal_tags
-      ActsAsTaggableOn::Tag.where("taggings.taggable_type" => "SpendingProposal").includes(:taggings).order(:name).uniq
-    end
-
     def self.public_columns_for_api
       ["id",
        "name",

@@ -1,11 +1,11 @@
-class Comment < ActiveRecord::Base
+class Comment < ApplicationRecord
   include Flaggable
   include HasPublicAuthor
   include Graphqlable
   include Notifiable
 
   COMMENTABLE_TYPES = %w(Debate Proposal Budget::Investment Poll Topic Legislation::Question
-                        Legislation::Annotation Legislation::Proposal SpendingProposal
+                        Legislation::Annotation Legislation::Proposal
                         Poll::Question ProbeOption).freeze
 
   acts_as_paranoid column: :hidden_at
@@ -23,7 +23,7 @@ class Comment < ActiveRecord::Base
   validate :validate_body_length, unless: -> { valuation }
   validate :comment_valuation, if: -> { valuation }
 
-  belongs_to :commentable, -> { with_hidden }, polymorphic: true, counter_cache: true
+  belongs_to :commentable, -> { with_hidden }, polymorphic: true, counter_cache: true, touch: true
   belongs_to :user, -> { with_hidden }
 
   before_save :calculate_confidence_score

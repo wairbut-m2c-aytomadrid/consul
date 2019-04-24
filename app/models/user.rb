@@ -1,10 +1,10 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
 
   include Verification
   require 'date'
 
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable,
-         :trackable, :validatable, :omniauthable, :async, :password_expirable, :secure_validatable,
+         :trackable, :validatable, :omniauthable, :password_expirable, :secure_validatable,
          authentication_keys: [:login]
 
   acts_as_voter
@@ -19,7 +19,6 @@ class User < ActiveRecord::Base
   has_one :manager
   has_one :poll_officer, class_name: "Poll::Officer"
   has_one :organization
-  has_one :forum
   has_one :lock
   has_one :ballot
   has_many :flags
@@ -29,7 +28,6 @@ class User < ActiveRecord::Base
   has_many :budget_investments, -> { with_hidden }, foreign_key: :author_id, class_name: "Budget::Investment"
   has_many :budget_recommendations, class_name: "Budget::Recommendation"
   has_many :comments, -> { with_hidden }
-  has_many :spending_proposals, foreign_key: :author_id
   has_many :failed_census_calls
   has_many :notifications
   has_many :direct_messages_sent,     class_name: "DirectMessage", foreign_key: :sender_id
@@ -37,7 +35,6 @@ class User < ActiveRecord::Base
   has_many :legislation_answers, class_name: "Legislation::Answer", dependent: :destroy, inverse_of: :user
   has_many :follows
   belongs_to :geozone
-  belongs_to :representative, class_name: "Forum"
 
   validates :username, presence: true, if: :username_required?
   validates :username, uniqueness: { scope: :registering_with_oauth }, if: :username_required?
@@ -59,7 +56,6 @@ class User < ActiveRecord::Base
   scope :administrators, -> { joins(:administrator) }
   scope :moderators,     -> { joins(:moderator) }
   scope :organizations,  -> { joins(:organization) }
-  scope :forums,         -> { joins(:forum) }
   scope :officials,      -> { where("official_level > 0") }
   scope :male,           -> { where(gender: "male") }
   scope :female,         -> { where(gender: "female") }
@@ -72,7 +68,7 @@ class User < ActiveRecord::Base
   scope :active,         -> { where(erased_at: nil) }
   scope :erased,         -> { where.not(erased_at: nil) }
   scope :public_for_api, -> { all }
-  scope :by_comments,    ->(query, topics_ids) { joins(:comments).where(query, topics_ids).uniq }
+  scope :by_comments,    ->(query, topics_ids) { joins(:comments).where(query, topics_ids).distinct }
   scope :by_authors,     ->(author_ids) { where("users.id IN (?)", author_ids) }
   scope :by_username_email_or_document_number, ->(search_string) do
     string = "%#{search_string}%"
@@ -127,11 +123,6 @@ class User < ActiveRecord::Base
     voted.each_with_object({}) { |v, h| h[v.votable_id] = v.value }
   end
 
-  def spending_proposal_votes(spending_proposals)
-    voted = votes.for_spending_proposals(spending_proposals)
-    voted.each_with_object({}) { |v, h| h[v.votable_id] = v.value }
-  end
-
   def budget_investment_votes(budget_investments)
     voted = votes.for_budget_investments(budget_investments)
     voted.each_with_object({}) { |v, h| h[v.votable_id] = v.value }
@@ -151,7 +142,9 @@ class User < ActiveRecord::Base
   end
 
   def headings_voted_within_group(group)
-    Budget::Heading.order("name").where(id: voted_investments.by_group(group).pluck(:heading_id))
+    Budget::Heading.joins(:translations)
+                   .order("name")
+                   .where(id: voted_investments.by_group(group).pluck(:heading_id))
   end
 
   def voted_investments
@@ -184,18 +177,6 @@ class User < ActiveRecord::Base
 
   def organization?
     organization.present?
-  end
-
-  def forum?
-    forum.present?
-  end
-
-  def has_representative?
-    representative.present?
-  end
-
-  def pending_delegation_alert?
-    has_representative? && accepted_delegation_alert == false
   end
 
   def verified_organization?
@@ -351,12 +332,6 @@ class User < ActiveRecord::Base
     true
   end
 
-  def supported_spending_proposals_geozone
-    if supported_spending_proposals_geozone_id.present?
-      Geozone.find(supported_spending_proposals_geozone_id)
-    end
-  end
-
   def ability
     @ability ||= Ability.new(self)
   end
@@ -402,6 +377,10 @@ class User < ActiveRecord::Base
   def interests
     followables = follows.map(&:followable)
     followables.compact.map { |followable| followable.tags.map(&:name) }.flatten.compact.uniq
+  end
+
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
   end
 
   private
