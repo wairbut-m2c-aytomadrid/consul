@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   include HasFilters
   include HasOrders
   include Analytics
+  include AccessDeniedHandler
 
   protect_from_forgery with: :exception
 
@@ -17,19 +18,6 @@ class ApplicationController < ActionController::Base
 
   check_authorization unless: :devise_controller?
   self.responder = ApplicationResponder
-
-  rescue_from CanCan::AccessDenied do |exception|
-    respond_to do |format|
-      format.html {
-        if current_user && current_user.officing_voter?
-          redirect_to new_officing_session_path
-        else
-          redirect_to main_app.root_url, alert: exception.message
-        end
-      }
-      format.json { render json: {error: exception.message}, status: :forbidden }
-    end
-  end
 
   layout :set_layout
   respond_to :html
