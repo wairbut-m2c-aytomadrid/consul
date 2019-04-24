@@ -25,6 +25,30 @@ feature "Recommendations" do
       end.to raise_error ActiveRecord::RecordNotFound
     end
 
+    scenario "without a user id shows recommendations for current user" do
+      create(:budget_recommendation,
+             user: user,
+             investment: create(:budget_investment, budget: budget, description: "More Festivals!")
+      )
+
+      create(:budget_recommendation,
+             user: create(:user),
+             investment: create(:budget_investment, budget: budget, description: "Less Festivals!")
+      )
+
+      login_as(user)
+      visit budget_recommendations_path(budget)
+
+      expect(page).to have_content "More Festivals!"
+      expect(page).not_to have_content "Less Festivals!"
+    end
+
+    scenario "without a user id redirects to sign in if user isn't authenticated" do
+      visit budget_recommendations_path(budget)
+
+      expect(page).to have_current_path new_user_session_path
+      expect(page).to have_content "You must sign in or register to continue"
+    end
   end
 
   scenario "Create by phase" do
