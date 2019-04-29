@@ -31,6 +31,24 @@ describe "Stats" do
   end
 
   describe "Show" do
+    describe "advanced stats" do
+      let(:budget) { create(:budget, :finished) }
+
+      scenario "advanced stats enabled" do
+        budget.update(advanced_stats_enabled: true)
+
+        visit budget_stats_path(budget)
+
+        expect(page).to have_content "Advanced statistics"
+      end
+
+      scenario "advanced stats disabled" do
+        visit budget_stats_path(budget)
+
+        expect(page).not_to have_content "Advanced statistics"
+      end
+    end
+
     context "headings" do
 
       scenario "Displays headings ordered by name with city heading first" do
@@ -38,7 +56,7 @@ describe "Stats" do
           heading.name == "City of New York"
         end
 
-        budget.update(phase: "finished")
+        budget.update(phase: "finished", stats_enabled: true, advanced_stats_enabled: true)
 
         city_group = create(:budget_group, budget: budget)
         district_group = create(:budget_group, budget: budget)

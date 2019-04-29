@@ -1329,8 +1329,9 @@ ActiveRecord::Schema.define(version: 20190507102732) do
     t.boolean  "results"
     t.string   "process_type"
     t.integer  "process_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.boolean  "advanced_stats"
     t.index ["process_type", "process_id"], name: "index_reports_on_process_type_and_process_id", using: :btree
   end
 
