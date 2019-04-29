@@ -8,7 +8,7 @@ describe "Stats" do
 
   context "Load" do
 
-    before { budget.update(slug: "budget_slug", phase: "finished") }
+    before { budget.update(slug: "budget_slug", phase: "finished", stats_enabled: true) }
 
     scenario "finds budget by slug" do
       visit budget_stats_path("budget_slug")
