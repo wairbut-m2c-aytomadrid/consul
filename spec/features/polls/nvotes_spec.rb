@@ -1,6 +1,6 @@
 require "rails_helper"
 
-feature "Nvotes" do
+describe "Nvotes" do
 
   before do
     skip "this feature is currently disabled"

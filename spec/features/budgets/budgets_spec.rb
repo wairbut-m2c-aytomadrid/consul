@@ -1,6 +1,6 @@
 require "rails_helper"
 
-feature "Budgets" do
+describe "Budgets" do
 
   let(:budget)             { create(:budget) }
   let(:level_two_user)     { create(:user, :level_two) }
@@ -245,7 +245,7 @@ feature "Budgets" do
     let(:group)   { create(:budget_group, budget: budget) }
     let(:heading) { create(:budget_heading, group: group) }
 
-    background do
+    before do
       Setting["feature.map"] = true
     end
 
@@ -470,7 +470,7 @@ feature "Budgets" do
 
     let(:admin) { create(:administrator).user }
 
-    background do
+    before do
       logout
       budget.update(phase: "drafting")
       create(:budget)
@@ -523,7 +523,7 @@ feature "Budgets" do
 
   context "Accepting" do
 
-    background do
+    before do
       budget.update(phase: "accepting")
     end
 
