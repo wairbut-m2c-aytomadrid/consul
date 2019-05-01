@@ -1082,6 +1082,16 @@ describe Budget::Investment do
 
   describe ".order_filter" do
 
+    it "sorts investments by supports when no order given" do
+      most_voted = create(:budget_investment, cached_votes_up: 1, physical_votes: 10)
+      some_votes = create(:budget_investment, cached_votes_up: 3, physical_votes: 3)
+      least_voted = create(:budget_investment, cached_votes_up: 4, physical_votes: 1)
+
+      expect(described_class.order_filter({}).first).to eq most_voted
+      expect(described_class.order_filter({}).second).to eq some_votes
+      expect(described_class.order_filter({}).third).to eq least_voted
+    end
+
     it "sorts investments by supports" do
       most_voted = create(:budget_investment, cached_votes_up: 1, physical_votes: 10)
       some_votes = create(:budget_investment, cached_votes_up: 3, physical_votes: 3)

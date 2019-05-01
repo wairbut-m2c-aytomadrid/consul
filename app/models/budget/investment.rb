@@ -153,7 +153,7 @@ class Budget
         direction = params[:direction] == "desc" ? "desc" : "asc"
         order("#{allowed_sort_option} #{direction}")
       else
-        order(cached_votes_up: :desc).order(id: :desc)
+        sort_by_supports
       end
     end
 
