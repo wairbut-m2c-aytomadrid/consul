@@ -17,10 +17,10 @@
           </div>
         </div>
 
-        <div class="<%= css_for_proposal_info_row %>">
+        <div class="<%= css_for_proposal_info_row(proposal) %>">
     <% else %>
       <div class="row">
-        <div class="<%= css_for_proposal_info_row %>">
+        <div class="<%= css_for_proposal_info_row(proposal) %>">
       <% end %>
         <div class="proposal-content">
           <% cache [locale_and_user_status(proposal), "index", proposal, proposal.author] do %>
@@ -74,11 +74,10 @@
              class="small-12 medium-3 column supports-container"
              <%= "data-equalizer-watch" if feature?(:allow_images) && proposal.image.present? %>>
           <% if proposal.successful? %>
-            <div class="padding text-center">
-              <p>
-                <%= t("proposals.proposal.successful",
-                    voting: link_to(t("proposals.proposal.voting"), polls_path)).html_safe %>
-              </p>
+            <div class="padding">
+              <div class="supports text-center">
+                <%= render "proposals/supports", proposal: proposal %>
+              </div>
             </div>
           <% elsif proposal.archived? %>
             <div class="message">
