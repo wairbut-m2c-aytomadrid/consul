@@ -175,7 +175,7 @@ describe "Admin budgets" do
       click_link "Edit budget"
       click_link "Delete budget"
 
-      expect(page).to have_content("You cannot destroy a Budget that has associated investments")
+      expect(page).to have_content("You cannot destroy a budget that has associated investments")
       expect(page).to have_content("There is 1 budget")
     end
   end
