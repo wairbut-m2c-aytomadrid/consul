@@ -124,6 +124,16 @@ class Setting < ApplicationRecord
         "transparency_url": "http://transparencia.madrid.es/",
         "twitter_handle": "abriendomadrid",
         "twitter_hashtag": "#decidemadrid",
+        # Images and Documents
+        "uploads.images.title.min_length": 4,
+        "uploads.images.title.max_length": 80,
+        "uploads.images.min_width": 0,
+        "uploads.images.min_height": 475,
+        "uploads.images.max_size": 1,
+        "uploads.images.content_types": "image/jpeg",
+        "uploads.documents.max_amount": 3,
+        "uploads.documents.max_size": 3,
+        "uploads.documents.content_types": "application/pdf",
         "url": "https://decide.madrid.es", # Public-facing URL of the app.
         "verification_offices_url": "http://www.madrid.es/portales/munimadrid/es/Inicio/El-Ayuntamiento/Atencion-al-ciudadano/Oficinas-de-Atencion-al-Ciudadano?vgnextfmt=default&vgnextchannel=5b99cde2e09a4310VgnVCM1000000b205a0aRCRD",
         "votes_for_proposal_success": 53726,
