@@ -128,4 +128,8 @@ module ProposalsHelper
   def show_proposal_votes?
     params[:selected].blank?
   end
+
+  def show_featured_proposals?
+    params[:selected].blank? && @featured_proposals.present?
+  end
 end
