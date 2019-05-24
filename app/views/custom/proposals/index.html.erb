@@ -90,7 +90,10 @@
         <%= render "shared/advanced_search",
                    search_path: path_to_search_proposals  %>
       <% end %>
-      <%= render "shared/order_links", i18n_namespace: "proposals.index" %>
+
+      <% unless params[:selected].present? %>
+        <%= render "shared/order_links", i18n_namespace: "proposals.index" %>
+      <% end %>
 
       <% if @proposals.any? %>
         <% if request.path != human_rights_proposals_path %>
