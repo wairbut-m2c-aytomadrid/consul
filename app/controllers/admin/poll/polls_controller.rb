@@ -65,15 +65,6 @@ class Admin::Poll::PollsController < Admin::Poll::BaseController
     else
       @poll.destroy
 
-      @poll.questions.each do |question|
-
-        question.answers.each do |answer|
-          answer.destroy
-        end
-
-        question.destroy
-      end
-
       redirect_to admin_polls_path, notice: t("admin.polls.destroy.success_notice")
     end
   end
