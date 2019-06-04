@@ -189,26 +189,15 @@ describe "Proposals" do
       expect(page).not_to have_content "Access the community"
     end
 
-    scenario "Selected proposals does not show proposal code" do
+    scenario "Selected proposals does not show all information" do
       proposal = create(:proposal, :selected)
 
       visit proposal_path(proposal)
       expect(page).not_to have_content proposal.code
       expect(page).not_to have_content("Proposal code:")
-    end
 
-    scenario "Selected proposals does not show related content section" do
-      proposal = create(:proposal, :selected)
-
-      visit proposal_path(proposal)
       expect(page).not_to have_content("Related content")
       expect(page).not_to have_button("Add related content")
-    end
-
-    scenario "Selected proposals does not show comments count" do
-      proposal = create(:proposal, :selected)
-
-      visit proposal_path(proposal)
 
       within(".proposal-info") do
         expect(page).not_to have_link("No comments", href: "#comments")
