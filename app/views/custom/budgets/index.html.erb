@@ -61,8 +61,7 @@
             <% end %>
           <% end %>
 
-
-        <% if current_budget.finished? %>
+        <% if can?(:read_results, current_budget) %>
           <%= link_to t("budgets.show.see_results"),
                       budget_results_path(current_budget),
                       class: "button margin-top expanded" %>
