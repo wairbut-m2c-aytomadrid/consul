@@ -286,4 +286,14 @@ describe "Executions" do
     end
 
   end
+
+  scenario "No links to budget executions with executions disabled" do
+    budget.update(executions_enabled: false)
+
+    visit budgets_path
+
+    visit budget_stats_path(budget)
+
+    expect(page).not_to have_link "Milestones"
+  end
 end
