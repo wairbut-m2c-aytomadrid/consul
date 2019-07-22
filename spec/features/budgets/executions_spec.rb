@@ -292,6 +292,8 @@ describe "Executions" do
 
     visit budgets_path
 
+    expect(page).not_to have_link "Milestones"
+
     visit budget_stats_path(budget)
 
     expect(page).not_to have_link "Milestones"
