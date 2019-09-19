@@ -33,34 +33,16 @@ class Users::SessionsController < Devise::SessionsController
       elsif !verifying_via_email? && resource.show_welcome_screen?
         welcome_path
       else
-        if user_admin? && ip_out_of_internal_red?
-          if phone_number_present?
+        if current_user.try(:administrator?) && current_user.try(:ip_out_of_internal_red?)
+          if current_user.phone_number_present?
             double_confimation_needed
           else
-            #sign_out
             no_phone_double_confirmations_path
           end
         else
           super
         end
       end
-    end
-
-    def user_admin?
-      current_user.try(:administrator?)
-    end
-
-    def phone_number_present?
-      !current_user.try(:phone_number).blank? && !current_user.try(:confirmed_phone).blank?  && (current_user.phone_number == current_user.confirmed_phone)
-    end
-
-    def ip_out_of_internal_red?
-      current_ip = current_user.current_sign_in_ip.to_i
-      # low = IPAddr.new("10.90.0.0").to_i
-      # high = IPAddr.new("10.90.255.255").to_i
-      low = IPAddr.new("0.0.0.0").to_i
-      high = IPAddr.new("255.255.255.255").to_i
-      (low..high)===current_ip
     end
 
     def double_confimation_needed

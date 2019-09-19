@@ -237,6 +237,19 @@ class User < ApplicationRecord
     identities.destroy_all
   end
 
+  def ip_out_of_internal_red?
+    current_ip = self.current_sign_in_ip.to_i
+    # low = IPAddr.new("10.90.0.0").to_i
+    # high = IPAddr.new("10.90.255.255").to_i
+    low = IPAddr.new("0.0.0.0").to_i
+    high = IPAddr.new("255.255.255.255").to_i
+    (low..high)===current_ip
+  end
+
+  def phone_number_present?
+    !current_user.try(:phone_number).blank? && !current_user.try(:confirmed_phone).blank?  && (current_user.phone_number == current_user.confirmed_phone)
+  end
+
   def erased?
     erased_at.present?
   end
