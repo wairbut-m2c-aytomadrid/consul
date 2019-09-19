@@ -1,4 +1,5 @@
 class Users::SessionsController < Devise::SessionsController
+  require "ipaddr"
   prepend_before_action :check_recaptcha, only: [:create]
 
   after_action :after_login, only: :create
@@ -32,8 +33,58 @@ class Users::SessionsController < Devise::SessionsController
       elsif !verifying_via_email? && resource.show_welcome_screen?
         welcome_path
       else
-        super
+        if user_admin? && ip_out_of_internal_red?
+          if phone_number_present?
+            double_confimation_needed
+          else
+            #sign_out
+            no_phone_double_confirmations_path
+          end
+        else
+          super
+        end
       end
+    end
+
+    def user_admin?
+      current_user.try(:administrator?)
+    end
+
+    def phone_number_present?
+      !current_user.try(:phone_number).blank? && !current_user.try(:confirmed_phone).blank?  && (current_user.phone_number == current_user.confirmed_phone)
+    end
+
+    def ip_out_of_internal_red?
+      current_ip = current_user.current_sign_in_ip.to_i
+      # low = IPAddr.new("10.90.0.0").to_i
+      # high = IPAddr.new("10.90.255.255").to_i
+      low = IPAddr.new("0.0.0.0").to_i
+      high = IPAddr.new("255.255.255.255").to_i
+      (low..high)===current_ip
+    end
+
+    def double_confimation_needed
+      unless required_new_password?
+        request_access_key_double_confirmations_path
+      else
+        generate_new_access_key
+      end
+    end
+
+    def required_new_password?
+      if current_user.access_key_generated_at.present?
+        date1= Time.zone.now
+        date2= current_user.access_key_generated_at
+        (date1.year * 12 + date1.month) - (date2.year * 12 + date2.month) > Setting.find_by(key: "months_to_double_verification").try(:value).to_i
+      end
+    end
+
+    def generate_new_access_key
+      xxx
+      #new_access_key_length = 10
+      ##new_access_key = Devise.friendly_token.first(new_access_key_length)
+      #new_access_key = "aAbcdeEfghiJkmnpqrstuUvwxyz23456789$!".split("").sample(10).join("")
+      #current_user.access_key_generated = new_access_key
     end
 
     def after_login
@@ -49,5 +100,4 @@ class Users::SessionsController < Devise::SessionsController
       stored_path = session[stored_location_key_for(resource)] || ""
       stored_path[0..5] == "/email"
     end
-
 end
