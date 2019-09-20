@@ -49,7 +49,7 @@ class Users::SessionsController < Devise::SessionsController
       unless required_new_password?
         request_access_key_double_confirmations_path
       else
-        generate_new_access_key
+        new_password_sent_double_confirmations_path
       end
     end
 
@@ -58,15 +58,9 @@ class Users::SessionsController < Devise::SessionsController
         date1= Time.zone.now
         date2= current_user.access_key_generated_at
         (date1.year * 12 + date1.month) - (date2.year * 12 + date2.month) > Setting.find_by(key: "months_to_double_verification").try(:value).to_i
+      else
+        true
       end
-    end
-
-    def generate_new_access_key
-      xxx
-      #new_access_key_length = 10
-      ##new_access_key = Devise.friendly_token.first(new_access_key_length)
-      #new_access_key = "aAbcdeEfghiJkmnpqrstuUvwxyz23456789$!".split("").sample(10).join("")
-      #current_user.access_key_generated = new_access_key
     end
 
     def after_login
