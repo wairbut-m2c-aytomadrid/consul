@@ -915,8 +915,10 @@ es:
       verify: Verificar
       not_remember: 'Si no recuerda su clave de acceso pinche aquí:'
       generate_new_key: Generar y enviar nueva clave
+      insert_access_key: Verificar clave de acceso
       needed_double_verification: Su clave ha caducado o no ha sido verificada
-      new_password_sent: Se le ha enviado correctamente el SMS con su clave de acceso. Gracias.
+      access_key_error: Ha introducido una clave errónea. Inténtelo de nuevo.
+      new_password_sent: Se le ha enviado un SMS con su clave de acceso. Esta clave debe ser verificada para poder acceder al sistema.
     valuators:
       index:
         title: Evaluadores
