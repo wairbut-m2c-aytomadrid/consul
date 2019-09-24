@@ -256,18 +256,18 @@ class User < ApplicationRecord
   end
 
   def encrypt_access_key(access_key)
-    unless self.blank? 
+    if !self.blank? && !access_key.blank?
         Criptografia.new.encrypt(access_key)
     end
   end
 
   def decrypt_access_key(encrypted_access_key)
       begin
-          unless self.blank? 
+          if !self.blank? && !encrypted_access_key.blank?
               Criptografia.new.decrypt(encrypted_access_key.to_s)
           end
       rescue
-          self.update(access_key_generated_at: nil)
+         self.update(access_key_generated_at: nil)
       end
   end
 
