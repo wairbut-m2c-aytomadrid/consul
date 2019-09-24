@@ -14,7 +14,19 @@ class DoubleConfirmationsController < ApplicationController
     end
 
     def new_password_sent
-        redirect_to request_access_key_double_confirmations_path, notice: I18n.t("admin.double_verification.new_password_sent")
+        unless current_user.blank?
+            new_access_key_length = 10
+            new_access_key = "aAbcdeEfghiJkmnpqrstuUvwxyz23456789$!".split("").sample(10).join("")
+            encrypted_access_key = encrypt_access_key(new_access_key)
+            current_user.update(access_key_generated: encrypted_access_key)
+            current_user.update(access_key_generated_at: Time.now)
+            self.send_sms(new_access_key)
+            redirect_to request_access_key_double_confirmations_path, notice: I18n.t("admin.double_verification.new_password_sent")
+        end
+    end
+
+    def send_sms(access_key)
+        SMSApi.new.sms_deliver(current_user.confirmed_phone, access_key)
     end
 
 
