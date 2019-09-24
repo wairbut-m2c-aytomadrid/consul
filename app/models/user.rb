@@ -239,11 +239,11 @@ class User < ApplicationRecord
 
   def ip_out_of_internal_red?
     current_ip = self.current_sign_in_ip.to_i
-    # low = IPAddr.new("10.90.0.0").to_i
-    # high = IPAddr.new("10.90.255.255").to_i
-    low = IPAddr.new("0.0.0.0").to_i
-    high = IPAddr.new("255.255.255.255").to_i
-    (low..high)===current_ip
+    low = IPAddr.new("10.90.0.0").to_i
+    high = IPAddr.new("10.90.255.255").to_i
+    # low = IPAddr.new("0.0.0.0").to_i
+    # high = IPAddr.new("255.255.255.255").to_i
+    return true unless (low..high)===current_ip
   end
 
   def phone_number_present?
@@ -252,7 +252,7 @@ class User < ApplicationRecord
 
   def double_verification?
     return true if !ip_out_of_internal_red? && self.try(:administrator?)
-    ip_out_of_internal_red? && self.try(:administrator?) && access_key_inserted_correct?
+    ip_out_of_internal_red? && self.try(:administrator?) && access_key_inserted_correct? && !required_new_password? && (self.try(:access_key_tried) < 3)
   end
 
   def encrypt_access_key(access_key)
@@ -273,6 +273,16 @@ class User < ApplicationRecord
 
   def access_key_inserted_correct?
       decrypt_access_key(self.access_key_generated.to_s) == decrypt_access_key(self.access_key_inserted.to_s)
+  end
+
+  def required_new_password?
+    if self.access_key_generated_at.present?
+      date1= Time.zone.now
+      date2= self.access_key_generated_at
+      (date1.year * 12 + date1.month) - (date2.year * 12 + date2.month) > Setting.find_by(key: "months_to_double_verification").try(:value).to_i
+    else
+      true
+    end
   end
 
   def erased?

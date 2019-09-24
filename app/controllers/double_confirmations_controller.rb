@@ -30,9 +30,9 @@ class DoubleConfirmationsController < ApplicationController
     end
 
     def request_post_access_key
-        unless current_user.blank?
+        if !current_user.blank? && !params[:access_key].blank?
             access_count= (current_user.access_key_tried.to_i) + 1
-            access_key_inserted_encrypted = encrypt_access_key(params[:access_key])
+            access_key_inserted_encrypted = encrypt_access_key(params[:access_key]) 
             current_user.update(access_key_inserted: access_key_inserted_encrypted)
             if current_user.access_key_tried < 3 
                 current_user.update(access_key_tried: access_count)
@@ -41,6 +41,8 @@ class DoubleConfirmationsController < ApplicationController
                 sign_out
                 redirect_to user_blocked_double_confirmations_path
             end
+        else
+            redirect_to request_access_key_double_confirmations_path
         end
     end
 
@@ -56,9 +58,22 @@ class DoubleConfirmationsController < ApplicationController
             redirect_to welcome_path, alert: I18n.t("admin.double_verification.double_conmfirmed")
         elsif current_user.phone_number_present?
             no_phone_double_confirmations_path
-
         end
     end
 
-    
+    def encrypt_access_key(access_key)
+        unless self.blank? 
+            Criptografia.new.encrypt(access_key)
+        end
+    end
+
+    def decrypt_access_key(encrypted_access_key)
+        begin
+            unless self.blank? 
+                Criptografia.new.decrypt(encrypted_access_key.to_s)
+            end
+        rescue
+            self.update(access_key_generated_at: nil)
+        end
+    end
 end
