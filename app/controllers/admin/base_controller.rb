@@ -12,8 +12,7 @@ class Admin::BaseController < ApplicationController
     end
 
     def double_verified
-     if current_user.ip_out_of_internal_red?
-     end
+      raise CanCan::AccessDenied unless current_user.double_verification?
     end
 
 end

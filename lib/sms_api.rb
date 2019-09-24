@@ -17,8 +17,8 @@ class SMSApi
 
   def sms_deliver(phone, code)
     return stubbed_response unless end_point_available?
-
     response = client.call(:enviar_sms_simples, message: request(phone, code))
+
     success?(response)
   end
 

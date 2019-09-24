@@ -251,7 +251,28 @@ class User < ApplicationRecord
   end
 
   def double_verification?
-    !self.try(:phone_number).blank? && !self.try(:confirmed_phone).blank?  && (self.phone_number == self.confirmed_phone)
+    return true if !ip_out_of_internal_red? && self.try(:administrator?)
+    ip_out_of_internal_red? && self.try(:administrator?) && access_key_inserted_correct?
+  end
+
+  def encrypt_access_key(access_key)
+    unless self.blank? 
+        Criptografia.new.encrypt(access_key)
+    end
+  end
+
+  def decrypt_access_key(encrypted_access_key)
+      begin
+          unless self.blank? 
+              Criptografia.new.decrypt(encrypted_access_key.to_s)
+          end
+      rescue
+          self.update(access_key_generated_at: nil)
+      end
+  end
+
+  def access_key_inserted_correct?
+      decrypt_access_key(self.access_key_generated.to_s) == decrypt_access_key(self.access_key_inserted.to_s)
   end
 
   def erased?

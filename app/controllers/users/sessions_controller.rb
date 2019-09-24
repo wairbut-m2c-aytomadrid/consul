@@ -33,8 +33,11 @@ class Users::SessionsController < Devise::SessionsController
       elsif !verifying_via_email? && resource.show_welcome_screen?
         welcome_path
       else
-        if current_user.try(:administrator?) && current_user.try(:ip_out_of_internal_red?)
-          if current_user.phone_number_present?
+        unless current_user.double_verification? 
+          if current_user.access_key_tried > 2 
+            sign_out 
+            user_blocked_double_confirmations_path
+          elsif current_user.phone_number_present?
             double_confimation_needed
           else
             no_phone_double_confirmations_path
