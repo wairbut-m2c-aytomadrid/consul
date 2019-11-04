@@ -61,7 +61,7 @@ class DoubleConfirmationsController < ApplicationController
         if current_user.blank?
             redirect_to welcome_path, alert: I18n.t("admin.double_verification.no_logged")
         elsif current_user.double_verification?
-            redirect_to welcome_path, alert: I18n.t("admin.double_verification.double_conmfirmed")
+            redirect_to welcome_path, notice: I18n.t("admin.double_verification.double_conmfirmed")
         elsif current_user.phone_number_present?
             no_phone_double_confirmations_path
         end
