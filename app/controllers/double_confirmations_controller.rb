@@ -21,11 +21,13 @@ class DoubleConfirmationsController < ApplicationController
             current_user.update_attributes(:access_key_generated => encrypted_access_key, :access_key_generated_at => Time.now)
 
             respuesta= send_sms(new_access_key)
-            if SMSApi.new.success?(respuesta)
+            if success?(respuesta)
                 redirect_to request_access_key_double_confirmations_path, notice: I18n.t("admin.double_verification.new_password_sent")
             else
-                redirect_to request_access_key_double_confirmations_path, notice: I18n.t("admin.double_verification.new_password_sent_failed")
+                redirect_to request_access_key_double_confirmations_path, alert: I18n.t("admin.double_verification.new_password_sent_failed")
             end
+        else
+            redirect_to request_access_key_double_confirmations_path, alert: I18n.t("admin.double_verification.new_password_sent_failed")
         end
     end
 
@@ -50,6 +52,14 @@ class DoubleConfirmationsController < ApplicationController
     private
     def send_sms(access_key)
         SMSApi.new.sms_deliver(current_user.confirmed_phone, access_key)
+    end
+
+    def success?(response)
+        response[:respuesta_sms] &&
+        response[:respuesta_sms][:respuesta_servicio_externo] &&
+        response[:respuesta_sms][:respuesta_servicio_externo][:texto_respuesta] == "Success"
+    rescue
+        false
     end
 
     def block_user
