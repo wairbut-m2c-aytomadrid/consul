@@ -52,6 +52,9 @@ class DoubleConfirmationsController < ApplicationController
     private
     def send_sms(access_key)
         SMSApi.new.sms_deliver(current_user.confirmed_phone, access_key)
+        true
+    rescue
+        false
     end
 
     def block_user
