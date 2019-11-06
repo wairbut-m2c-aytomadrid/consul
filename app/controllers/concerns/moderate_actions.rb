@@ -3,7 +3,8 @@ module ModerateActions
   include Polymorphic
 
   def index
-    @resources = @resources.send(@current_filter)
+    @resources = @resources.send(:"#{@current_filter}")
+                           .where(ignored_flag_at: nil).where(hidden_at: nil)
                            .send("sort_by_#{@current_order}")
                            .page(params[:page])
                            .per(50)
