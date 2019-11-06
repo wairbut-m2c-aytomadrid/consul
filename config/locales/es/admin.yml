@@ -921,7 +921,7 @@ es:
       needed_double_verification: Su clave ha caducado o no ha sido verificada
       access_key_error: Ha introducido una clave errónea. Inténtelo de nuevo.
       new_password_sent_failed: Ha habido un error al enviarle en SMS con su clave de acceso.
-      new_password_sent: Se le ha enviado un SMS con su clave de acceso. Esta clave debe ser verificada para poder acceder al sistema.
+      new_password_sent: Se le ha enviado un SMS con su clave de acceso, si no lo recibe en unos minutos, pulse "Generar y enviar nueva clave".
     valuators:
       index:
         title: Evaluadores
