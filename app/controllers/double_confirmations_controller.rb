@@ -21,11 +21,8 @@ class DoubleConfirmationsController < ApplicationController
             encrypted_access_key = encrypt_access_key(new_access_key)
             current_user.update_attributes(:access_key_generated => encrypted_access_key, :access_key_generated_at => Time.now)
 
-            if send_sms(new_access_key)
-                redirect_to request_access_key_double_confirmations_path, notice: I18n.t("admin.double_verification.new_password_sent")
-            else
-                redirect_to request_access_key_double_confirmations_path, alert: I18n.t("admin.double_verification.new_password_sent_failed")
-            end
+            send_sms(new_access_key)
+            redirect_to request_access_key_double_confirmations_path, notice: I18n.t("admin.double_verification.new_password_sent")
         else
             redirect_to request_access_key_double_confirmations_path, alert: I18n.t("admin.double_verification.new_password_sent_failed")
         end
@@ -52,9 +49,6 @@ class DoubleConfirmationsController < ApplicationController
     private
     def send_sms(access_key)
         SMSApi.new.sms_deliver(current_user.confirmed_phone, access_key)
-        true
-    rescue
-        false
     end
 
     def block_user
